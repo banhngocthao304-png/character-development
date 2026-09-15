@@ -350,7 +350,12 @@ function MeasurementForm({ open, entry, allEntries, selectedMonth, onOpenChange,
   const finalDay = new Date(Number(year), Number(monthNumber), 0).getDate();
   const minimumDate = `${selectedMonth}-01`;
   const maximumDate = `${selectedMonth}-${String(finalDay).padStart(2, "0")}`;
-  const initial = (): FormState => ({ measurement_date: entry?.measurement_date ?? defaultDate, weight_kg: entry?.weight_kg?.toString() ?? "", waist_cm: entry?.waist_cm?.toString() ?? "", hip_cm: entry?.hip_cm?.toString() ?? "", bust_cm: entry?.bust_cm?.toString() ?? "", thigh_cm: entry?.thigh_cm?.toString() ?? "", arm_cm: entry?.arm_cm?.toString() ?? "" });
+  const initial = (): FormState => ({
+    measurement_date: entry?.measurement_date ?? defaultDate,
+    ...(Object.fromEntries(
+      METRICS.map((item) => [item.key, entry?.[item.key]?.toString() ?? ""]),
+    ) as Record<MetricKey, string>),
+  });
   const [form, setForm] = useState<FormState>(initial);
   const existing = allEntries.find((item) => item.measurement_date === form.measurement_date && item.id !== entry?.id) ?? null;
   const hasValue = METRICS.some((item) => form[item.key] !== "");
