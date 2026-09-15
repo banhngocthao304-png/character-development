@@ -139,7 +139,7 @@ function PtPage() {
     <>
       <PageHeader
         icon={<Dumbbell className="size-7" />}
-        title="PT Tracker"
+        title="Workout diary"
         subtitle="Show up for yourself"
       />
 
