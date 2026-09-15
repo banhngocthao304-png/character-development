@@ -20,6 +20,7 @@ Out of scope: Meal Log / actual food tracking, consumed calories/macros, recipes
 - [x] Meals: editable food-option categories and autocomplete
 - [x] Meals: clean collapsible Food Options view with search and per-category edit mode
 - [x] Global compact typography and spacing refinement across mobile and desktop
+- [ ] Further lean typography, lighter weights, and tighter spacing across all views
 - [x] Settings: PT package size + period start day (export CSV still open)
 - [ ] Settings: export data (CSV)
 - [ ] Responsive + empty/loading/error states pass
