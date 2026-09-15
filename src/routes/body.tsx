@@ -95,7 +95,7 @@ function BodyPage() {
   return (
     <>
       <PageHeader
-        icon={<Ruler className="size-7" />}
+        icon={<Ruler className="size-5" />}
         title="Body Measurements"
         subtitle="the monthly reality check"
       />

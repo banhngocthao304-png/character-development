@@ -36,7 +36,7 @@ export function MealsPage() {
 
   return (
     <>
-      <PageHeader icon={<UtensilsCrossed className="size-7" />} title="Meals" subtitle="eat like an adult" />
+      <PageHeader icon={<UtensilsCrossed className="size-5" />} title="Meals" subtitle="eat like an adult" />
       <Tabs defaultValue="target" className="space-y-3">
         <TabsList className="grid h-8 w-full grid-cols-3 rounded-xl bg-lavender-faint p-0.5 sm:max-w-xl">
           <TabsTrigger value="target" className="h-9 px-1 text-[11px] sm:text-sm">Daily Target</TabsTrigger>

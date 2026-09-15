@@ -56,7 +56,7 @@ function SettingsPage() {
   return (
     <>
       <PageHeader
-        icon={<SettingsIcon className="size-7" />}
+        icon={<SettingsIcon className="size-5" />}
         title="Settings"
         subtitle="Make it yours"
       />

@@ -138,7 +138,7 @@ function PtPage() {
   return (
     <>
       <PageHeader
-        icon={<Dumbbell className="size-7" />}
+        icon={<Dumbbell className="size-5" />}
         title="Workout diary"
         subtitle="paid to suffer..."
       />
