@@ -192,19 +192,20 @@ function BodyPage() {
 }
 
 const METRICS = [
-  { key: "weight_kg", label: "Weight", unit: "kg" },
-  { key: "bmi", label: "BMI", unit: "" },
-  { key: "body_fat_mass_kg", label: "Body Fat Mass", unit: "kg" },
-  { key: "muscle_mass_kg", label: "Muscle Mass", unit: "kg" },
-  { key: "waist_cm", label: "Waist", unit: "cm" },
-  { key: "belly_cm", label: "Belly", unit: "cm" },
-  { key: "hips_cm", label: "Hips", unit: "cm" },
-  { key: "glutes_cm", label: "Glutes", unit: "cm" },
-  { key: "upper_arms_cm", label: "Upper Arms", unit: "cm" },
-  { key: "thighs_cm", label: "Thighs", unit: "cm" },
-  { key: "bust_cm", label: "Bust", unit: "cm" },
+  { key: "weight_kg", label: "Weight", unit: "kg", preferred: "lower" },
+  { key: "bmi", label: "BMI", unit: "", preferred: "lower" },
+  { key: "body_fat_mass_kg", label: "Body Fat Mass", unit: "kg", preferred: "lower" },
+  { key: "muscle_mass_kg", label: "Muscle Mass", unit: "kg", preferred: "higher" },
+  { key: "waist_cm", label: "Waist", unit: "cm", preferred: "lower" },
+  { key: "belly_cm", label: "Belly", unit: "cm", preferred: "lower" },
+  { key: "hips_cm", label: "Hips", unit: "cm", preferred: "lower" },
+  { key: "glutes_cm", label: "Glutes", unit: "cm", preferred: "lower" },
+  { key: "upper_arms_cm", label: "Upper Arms", unit: "cm", preferred: "lower" },
+  { key: "thighs_cm", label: "Thighs", unit: "cm", preferred: "lower" },
+  { key: "bust_cm", label: "Bust", unit: "cm", preferred: "higher" },
 ] as const;
 type MetricKey = (typeof METRICS)[number]["key"];
+type MetricConfig = (typeof METRICS)[number];
 type RangeKey = "1M" | "3M" | "6M" | "1Y" | "All";
 const RANGES: RangeKey[] = ["1M", "3M", "6M", "1Y", "All"];
 
@@ -223,6 +224,41 @@ function shiftMonth(month: string, amount: number): string {
   const [year = "1970", monthNumber = "1"] = month.split("-");
   const date = new Date(Number(year), Number(monthNumber) - 1 + amount, 1);
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
+type ChangeInfo = {
+  difference: number;
+  previousMonth: string;
+  tone: "positive" | "negative" | "neutral";
+};
+
+function getMetricChange(entries: BodyMeasurement[], entry: BodyMeasurement, metric: MetricConfig): ChangeInfo | null {
+  const value = entry[metric.key];
+  if (value == null) return null;
+  const previous = entries.find(
+    (item) => item.measurement_date < entry.measurement_date && item[metric.key] != null,
+  );
+  const previousValue = previous?.[metric.key];
+  if (previous == null || previousValue == null) return null;
+  const difference = Number(value) - Number(previousValue);
+  const preferred = difference === 0
+    ? "neutral"
+    : (metric.preferred === "lower" ? difference < 0 : difference > 0)
+      ? "positive"
+      : "negative";
+  return { difference, previousMonth: previous.measurement_date.slice(0, 7), tone: preferred };
+}
+
+function ChangeIndicator({ change, unit }: { change: ChangeInfo; unit: string }) {
+  const toneClass = change.tone === "positive"
+    ? "text-change-positive"
+    : change.tone === "negative"
+      ? "text-change-negative"
+      : "text-change-neutral";
+  const text = change.difference === 0
+    ? `— No change from ${monthName(change.previousMonth, false)}`
+    : `${change.difference < 0 ? "↓" : "↑"} ${formatNumber(Math.abs(change.difference))}${unit ? ` ${unit}` : ""} from ${monthName(change.previousMonth, false)}`;
+  return <p className={`text-xs font-medium ${toneClass}`}>{text}</p>;
 }
 
 function MonthNavigation({ month, onChange }: { month: string; onChange: (month: string) => void }) {
@@ -254,10 +290,8 @@ function MonthlyCheckIn({ month, entry, entries, onAdd, onEdit }: { month: strin
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
         {METRICS.map((metric) => {
           const value = entry[metric.key];
-          const previous = entries.find((item) => item.measurement_date.slice(0, 7) < month && item[metric.key] != null);
-          const previousValue = previous?.[metric.key];
-          const difference = value != null && previousValue != null ? Number(value) - Number(previousValue) : null;
-          return <div key={metric.key} className="min-h-24 rounded-xl bg-lavender-faint/55 p-3.5"><p className="text-xs font-medium text-muted-foreground">{metric.label}</p>{value == null ? <p className="mt-2 text-xl font-bold text-muted-foreground">—</p> : <><p className="mt-1 text-xl font-bold tabular-nums">{formatNumber(Number(value))} <span className="text-sm font-medium text-muted-foreground">{metric.unit}</span></p>{difference != null && difference !== 0 ? <p className="mt-1 text-xs font-medium text-primary">{difference < 0 ? "↓" : "↑"} {formatNumber(Math.abs(difference))} {metric.unit} from {previous ? monthName(previous.measurement_date.slice(0, 7), false) : "previous"}</p> : null}</>}</div>;
+          const change = getMetricChange(entries, entry, metric);
+          return <div key={metric.key} className="min-h-24 rounded-xl bg-lavender-faint/55 p-3.5"><p className="text-xs font-medium text-muted-foreground">{metric.label}</p>{value == null ? <p className="mt-2 text-xl font-bold text-muted-foreground">—</p> : <><p className="mt-1 text-xl font-bold tabular-nums">{formatNumber(Number(value))} <span className="text-sm font-medium text-muted-foreground">{metric.unit}</span></p>{change ? <div className="mt-1"><ChangeIndicator change={change} unit={metric.unit} /></div> : null}</>}</div>;
         })}
       </div>
     </div>
@@ -282,9 +316,14 @@ function ProgressGraph({ entries, metric, range, onAdd }: { entries: BodyMeasure
         seenMonths.add(month);
         return true;
       })
-      .map((entry) => ({ date: entry.measurement_date, label: formatDateShort(entry.measurement_date), value: Number(entry[metric]) }))
+      .map((entry) => ({
+        date: entry.measurement_date,
+        label: formatDateShort(entry.measurement_date),
+        value: Number(entry[metric]),
+        change: getMetricChange(entries, entry, config),
+      }))
       .reverse();
-  }, [entries, metric, range]);
+  }, [config, entries, metric, range]);
 
   if (points.length === 0) {
     return <EmptyState title={`No ${config.label.toLowerCase()} measurements yet.`} action={<Button size="sm" onClick={onAdd}>Add Entry</Button>} />;
@@ -300,9 +339,9 @@ function ProgressGraph({ entries, metric, range, onAdd }: { entries: BodyMeasure
           <ChartTooltip
             cursor={{ stroke: "var(--color-border)" }}
             content={({ active, payload }) => {
-              const point = payload?.[0]?.payload as { date?: string; value?: number } | undefined;
+              const point = payload?.[0]?.payload as { date?: string; value?: number; change?: ChangeInfo | null } | undefined;
               if (!active || point?.date == null || point.value == null) return null;
-              return <div className="rounded-lg border border-border bg-card px-3 py-2 text-xs shadow-lift"><p className="font-medium">{formatDate(point.date)}</p><p className="mt-1 text-muted-foreground">{formatNumber(point.value)} {config.unit}</p></div>;
+              return <div className="rounded-lg border border-border bg-card px-3 py-2 text-xs shadow-lift"><p className="font-medium">{formatDate(point.date)}</p><p className="mt-1 text-muted-foreground">{formatNumber(point.value)} {config.unit}</p>{point.change ? <div className="mt-1"><ChangeIndicator change={point.change} unit={config.unit} /></div> : null}</div>;
             }}
           />
           <Line type="linear" dataKey="value" stroke="var(--color-primary)" strokeWidth={2} dot={{ r: 4, fill: "var(--color-card)", stroke: "var(--color-primary)", strokeWidth: 2 }} activeDot={{ r: 5 }} connectNulls={false} />
@@ -327,7 +366,7 @@ function MeasurementHistory({ entries, onEdit, onDelete }: { entries: BodyMeasur
           <article key={entry.id} className="rounded-xl border border-border p-4">
             <div className="flex items-center justify-between"><h3 className="text-sm font-semibold">{formatDate(entry.measurement_date)}</h3>{menu(entry)}</div>
             <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2">
-              {METRICS.filter((item) => entry[item.key] != null).map((item) => <div key={item.key} className="flex justify-between gap-2 text-sm"><span className="text-muted-foreground">{item.label}</span><span className="font-medium tabular-nums">{formatNumber(Number(entry[item.key]))} {item.unit}</span></div>)}
+               {METRICS.filter((item) => entry[item.key] != null).map((item) => { const change = getMetricChange(entries, entry, item); return <div key={item.key} className="flex justify-between gap-3 text-sm"><span className="text-muted-foreground">{item.label}</span><span className="text-right"><span className="font-medium tabular-nums">{formatNumber(Number(entry[item.key]))} {item.unit}</span>{change ? <ChangeIndicator change={change} unit={item.unit} /> : null}</span></div>; })}
             </div>
           </article>
         ))}
@@ -335,7 +374,7 @@ function MeasurementHistory({ entries, onEdit, onDelete }: { entries: BodyMeasur
       <div className="hidden overflow-x-auto md:block">
         <table className="w-full text-left text-sm">
           <thead><tr className="border-b border-border text-xs font-medium text-muted-foreground"><th className="px-3 py-3">Date</th>{METRICS.map((item) => <th key={item.key} className="px-3 py-3">{item.label}</th>)}<th className="w-10"><span className="sr-only">Actions</span></th></tr></thead>
-          <tbody>{entries.map((entry) => <tr key={entry.id} className="border-b border-border last:border-0"><td className="whitespace-nowrap px-3 py-3 font-medium">{formatDate(entry.measurement_date)}</td>{METRICS.map((item) => <td key={item.key} className="px-3 py-3 tabular-nums text-muted-foreground">{entry[item.key] == null ? "—" : `${formatNumber(Number(entry[item.key]))} ${item.unit}`}</td>)}<td>{menu(entry)}</td></tr>)}</tbody>
+           <tbody>{entries.map((entry) => <tr key={entry.id} className="border-b border-border last:border-0"><td className="whitespace-nowrap px-3 py-3 font-medium">{formatDate(entry.measurement_date)}</td>{METRICS.map((item) => { const change = getMetricChange(entries, entry, item); return <td key={item.key} className="px-3 py-3 tabular-nums text-muted-foreground">{entry[item.key] == null ? "—" : <><span>{formatNumber(Number(entry[item.key]))} {item.unit}</span>{change ? <ChangeIndicator change={change} unit={item.unit} /> : null}</>}</td>; })}<td>{menu(entry)}</td></tr>)}</tbody>
         </table>
       </div>
     </>
