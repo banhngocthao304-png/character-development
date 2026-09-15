@@ -16,12 +16,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 hidden w-60 flex-col border-r border-border bg-sidebar px-4 py-5 lg:flex">
+      <aside className="fixed inset-y-0 left-0 hidden w-56 flex-col border-r border-border bg-sidebar px-3 py-4 lg:flex">
         <div className="px-2">
-          <p className="text-base font-bold leading-tight">a healthier,</p>
-          <p className="text-base font-bold leading-tight text-primary">happier me</p>
+          <p className="text-sm font-medium leading-tight">a healthier,</p>
+          <p className="text-sm font-medium leading-tight text-primary">happier me</p>
         </div>
-        <nav className="mt-8 flex flex-1 flex-col gap-1">
+        <nav className="mt-6 flex flex-1 flex-col gap-0.5">
           {NAV.map((item) => {
             const active = pathname.startsWith(item.to);
             return (
@@ -30,7 +30,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 to={item.to}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                  "flex items-center gap-3 rounded-xl px-2.5 py-2 text-xs font-medium transition-colors",
                   active
                     ? "bg-sidebar-accent text-sidebar-accent-foreground"
                     : "text-muted-foreground hover:bg-lavender-faint hover:text-foreground",
@@ -45,7 +45,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <Link
           to="/settings"
           className={cn(
-            "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+            "flex items-center gap-3 rounded-xl px-2.5 py-2 text-xs font-medium transition-colors",
             pathname.startsWith("/settings")
               ? "bg-sidebar-accent text-sidebar-accent-foreground"
               : "text-muted-foreground hover:bg-lavender-faint hover:text-foreground",
@@ -57,8 +57,8 @@ export function AppShell({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border bg-background/90 px-4 py-3 backdrop-blur lg:hidden">
-        <p className="truncate text-sm font-bold">character development </p>
+      <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border bg-background/90 px-4 py-2 backdrop-blur lg:hidden">
+        <p className="truncate text-xs font-medium text-muted-foreground">character development </p>
         <Button asChild variant="ghost" size="iconSm" aria-label="Settings">
           <Link to="/settings">
             <Settings />
@@ -66,14 +66,14 @@ export function AppShell({ children }: { children: ReactNode }) {
         </Button>
       </header>
 
-      <main className="lg:pl-60">
-        <div className="mx-auto w-full max-w-[1400px] px-4 pb-28 pt-5 sm:px-6 lg:px-10 lg:pb-10 lg:pt-6">
+      <main className="lg:pl-56">
+        <div className="mx-auto w-full max-w-[1400px] px-3.5 pb-24 pt-3.5 sm:px-5 lg:px-8 lg:pb-8 lg:pt-5">
           {children}
         </div>
       </main>
 
       {/* Mobile bottom nav */}
-      <nav className="safe-bottom fixed inset-x-0 bottom-0 z-30 grid grid-cols-3 border-t border-border bg-card/95 pt-1.5 backdrop-blur lg:hidden">
+      <nav className="safe-bottom fixed inset-x-0 bottom-0 z-30 grid grid-cols-3 border-t border-border bg-card/95 pt-1 backdrop-blur lg:hidden">
         {NAV.map((item) => {
           const active = pathname.startsWith(item.to);
           return (
@@ -82,11 +82,11 @@ export function AppShell({ children }: { children: ReactNode }) {
               to={item.to}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "mx-2 flex flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-medium transition-colors",
+                "mx-2 flex flex-col items-center gap-0.5 rounded-xl py-1.5 text-[10px] font-medium transition-colors",
                 active ? "bg-lavender-soft text-accent-foreground" : "text-muted-foreground",
               )}
             >
-              <item.icon className="size-5" />
+              <item.icon className="size-[18px]" />
               {item.short}
             </Link>
           );
