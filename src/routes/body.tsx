@@ -193,11 +193,16 @@ function BodyPage() {
 
 const METRICS = [
   { key: "weight_kg", label: "Weight", unit: "kg" },
+  { key: "bmi", label: "BMI", unit: "" },
+  { key: "body_fat_mass_kg", label: "Body Fat Mass", unit: "kg" },
+  { key: "muscle_mass_kg", label: "Muscle Mass", unit: "kg" },
   { key: "waist_cm", label: "Waist", unit: "cm" },
-  { key: "hip_cm", label: "Hip", unit: "cm" },
+  { key: "belly_cm", label: "Belly", unit: "cm" },
+  { key: "hips_cm", label: "Hips", unit: "cm" },
+  { key: "glutes_cm", label: "Glutes", unit: "cm" },
+  { key: "upper_arms_cm", label: "Upper Arms", unit: "cm" },
+  { key: "thighs_cm", label: "Thighs", unit: "cm" },
   { key: "bust_cm", label: "Bust", unit: "cm" },
-  { key: "thigh_cm", label: "Thigh", unit: "cm" },
-  { key: "arm_cm", label: "Arm", unit: "cm" },
 ] as const;
 type MetricKey = (typeof METRICS)[number]["key"];
 type RangeKey = "1M" | "3M" | "6M" | "1Y" | "All";
