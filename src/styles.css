@@ -108,6 +108,8 @@
   --change-negative: oklch(0.56 0.105 24);
   --change-neutral: oklch(0.56 0.035 290);
 
+  --brand: oklch(0.53 0.12 291);
+
   --border: oklch(0.918 0.008 290);
   --input: oklch(0.918 0.008 290);
   --ring: oklch(0.665 0.115 291);
