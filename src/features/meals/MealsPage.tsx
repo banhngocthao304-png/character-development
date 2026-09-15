@@ -131,7 +131,7 @@ function MealPlanEditor({ open, onOpenChange, meals, foodNames, run }: { open: b
 }
 
 function OrderButtons({ index, total, onMove, label }: { index: number; total: number; onMove: (index: number, offset: number) => void; label: string }) {
-  return <div className="hidden shrink-0 sm:flex"><Button type="button" variant="ghost" size="iconSm" disabled={index === 0} aria-label={`Move ${label} up`} onClick={() => onMove(index, -1)}><ArrowUp /></Button><Button type="button" variant="ghost" size="iconSm" disabled={index === total - 1} aria-label={`Move ${label} down`} onClick={() => onMove(index, 1)}><ArrowDown /></Button></div>;
+  return <div className="flex shrink-0"><Button type="button" variant="ghost" size="iconSm" disabled={index === 0} aria-label={`Move ${label} up`} onClick={() => onMove(index, -1)}><ArrowUp /></Button><Button type="button" variant="ghost" size="iconSm" disabled={index === total - 1} aria-label={`Move ${label} down`} onClick={() => onMove(index, 1)}><ArrowDown /></Button></div>;
 }
 
 function FoodItemDialog({ editor, foodNames, onClose, onSave }: { editor: { meal: MealWithItems; item?: MealPlanItem } | null; foodNames: string[]; onClose: () => void; onSave: (v: ItemValues) => Promise<void> }) {
