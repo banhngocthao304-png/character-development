@@ -71,82 +71,124 @@ export type Database = {
         }
         Relationships: []
       }
-      meal_plan_days: {
+      food_option_categories: {
         Row: {
           created_at: string
-          daily_note: string | null
           id: string
-          plan_date: string
+          name: string
+          sort_order: number
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
-          daily_note?: string | null
           id?: string
-          plan_date: string
+          name: string
+          sort_order?: number
           updated_at?: string
           user_id?: string
         }
         Update: {
           created_at?: string
-          daily_note?: string | null
           id?: string
-          plan_date?: string
+          name?: string
+          sort_order?: number
           updated_at?: string
           user_id?: string
         }
         Relationships: []
       }
-      planned_meal_ingredients: {
+      food_options: {
         Row: {
+          category_id: string
+          created_at: string
           id: string
-          ingredient_name: string
-          planned_meal_id: string
-          quantity: number | null
+          name: string
           sort_order: number
-          unit: string | null
+          updated_at: string
           user_id: string
         }
         Insert: {
+          category_id: string
+          created_at?: string
           id?: string
-          ingredient_name: string
-          planned_meal_id: string
-          quantity?: number | null
+          name: string
           sort_order?: number
-          unit?: string | null
+          updated_at?: string
           user_id?: string
         }
         Update: {
+          category_id?: string
+          created_at?: string
           id?: string
-          ingredient_name?: string
-          planned_meal_id?: string
-          quantity?: number | null
+          name?: string
           sort_order?: number
-          unit?: string | null
+          updated_at?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "planned_meal_ingredients_planned_meal_id_fkey"
-            columns: ["planned_meal_id"]
+            foreignKeyName: "food_options_category_id_fkey"
+            columns: ["category_id"]
             isOneToOne: false
-            referencedRelation: "planned_meals"
+            referencedRelation: "food_option_categories"
             referencedColumns: ["id"]
           },
         ]
       }
-      planned_meals: {
+      meal_plan_items: {
+        Row: {
+          created_at: string
+          food_name: string
+          id: string
+          meal_id: string
+          preparation: string | null
+          quantity: number
+          sort_order: number
+          unit: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          food_name: string
+          id?: string
+          meal_id: string
+          preparation?: string | null
+          quantity: number
+          sort_order?: number
+          unit: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          food_name?: string
+          id?: string
+          meal_id?: string
+          preparation?: string | null
+          quantity?: number
+          sort_order?: number
+          unit?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meal_plan_items_meal_id_fkey"
+            columns: ["meal_id"]
+            isOneToOne: false
+            referencedRelation: "meal_plan_meals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meal_plan_meals: {
         Row: {
           created_at: string
           id: string
           meal_name: string
-          meal_plan_day_id: string
-          meal_type: string
-          notes: string | null
-          photo_path: string | null
-          planned_time: string | null
-          recipe_id: string | null
+          sort_order: number
           updated_at: string
           user_id: string
         }
@@ -154,12 +196,7 @@ export type Database = {
           created_at?: string
           id?: string
           meal_name: string
-          meal_plan_day_id: string
-          meal_type: string
-          notes?: string | null
-          photo_path?: string | null
-          planned_time?: string | null
-          recipe_id?: string | null
+          sort_order?: number
           updated_at?: string
           user_id?: string
         }
@@ -167,31 +204,62 @@ export type Database = {
           created_at?: string
           id?: string
           meal_name?: string
-          meal_plan_day_id?: string
-          meal_type?: string
-          notes?: string | null
-          photo_path?: string | null
-          planned_time?: string | null
-          recipe_id?: string | null
+          sort_order?: number
           updated_at?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "planned_meals_meal_plan_day_id_fkey"
-            columns: ["meal_plan_day_id"]
-            isOneToOne: false
-            referencedRelation: "meal_plan_days"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "planned_meals_recipe_id_fkey"
-            columns: ["recipe_id"]
-            isOneToOne: false
-            referencedRelation: "recipes"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
+      }
+      nutrition_targets: {
+        Row: {
+          calories_max: number
+          calories_min: number
+          carbs_max_g: number
+          carbs_min_g: number
+          created_at: string
+          fat_max_g: number
+          fat_min_g: number
+          id: string
+          protein_max_g: number
+          protein_min_g: number
+          updated_at: string
+          user_id: string
+          water_max_l: number
+          water_min_l: number
+        }
+        Insert: {
+          calories_max?: number
+          calories_min?: number
+          carbs_max_g?: number
+          carbs_min_g?: number
+          created_at?: string
+          fat_max_g?: number
+          fat_min_g?: number
+          id?: string
+          protein_max_g?: number
+          protein_min_g?: number
+          updated_at?: string
+          user_id?: string
+          water_max_l?: number
+          water_min_l?: number
+        }
+        Update: {
+          calories_max?: number
+          calories_min?: number
+          carbs_max_g?: number
+          carbs_min_g?: number
+          created_at?: string
+          fat_max_g?: number
+          fat_min_g?: number
+          id?: string
+          protein_max_g?: number
+          protein_min_g?: number
+          updated_at?: string
+          user_id?: string
+          water_max_l?: number
+          water_min_l?: number
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -322,147 +390,6 @@ export type Database = {
           id?: string
           period_start_day?: number
           sessions_per_period?: number
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      recipe_ingredients: {
-        Row: {
-          id: string
-          ingredient_name: string
-          quantity: number | null
-          recipe_id: string
-          sort_order: number
-          unit: string | null
-          user_id: string
-        }
-        Insert: {
-          id?: string
-          ingredient_name: string
-          quantity?: number | null
-          recipe_id: string
-          sort_order?: number
-          unit?: string | null
-          user_id?: string
-        }
-        Update: {
-          id?: string
-          ingredient_name?: string
-          quantity?: number | null
-          recipe_id?: string
-          sort_order?: number
-          unit?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "recipe_ingredients_recipe_id_fkey"
-            columns: ["recipe_id"]
-            isOneToOne: false
-            referencedRelation: "recipes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      recipe_steps: {
-        Row: {
-          id: string
-          instruction: string
-          recipe_id: string
-          step_number: number
-          user_id: string
-        }
-        Insert: {
-          id?: string
-          instruction: string
-          recipe_id: string
-          step_number?: number
-          user_id?: string
-        }
-        Update: {
-          id?: string
-          instruction?: string
-          recipe_id?: string
-          step_number?: number
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "recipe_steps_recipe_id_fkey"
-            columns: ["recipe_id"]
-            isOneToOne: false
-            referencedRelation: "recipes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      recipe_tags: {
-        Row: {
-          id: string
-          recipe_id: string
-          tag: string
-          user_id: string
-        }
-        Insert: {
-          id?: string
-          recipe_id: string
-          tag: string
-          user_id?: string
-        }
-        Update: {
-          id?: string
-          recipe_id?: string
-          tag?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "recipe_tags_recipe_id_fkey"
-            columns: ["recipe_id"]
-            isOneToOne: false
-            referencedRelation: "recipes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      recipes: {
-        Row: {
-          category: string
-          created_at: string
-          id: string
-          is_favorite: boolean
-          name: string
-          notes: string | null
-          photo_path: string | null
-          prep_minutes: number | null
-          servings: number
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          category?: string
-          created_at?: string
-          id?: string
-          is_favorite?: boolean
-          name: string
-          notes?: string | null
-          photo_path?: string | null
-          prep_minutes?: number | null
-          servings?: number
-          updated_at?: string
-          user_id?: string
-        }
-        Update: {
-          category?: string
-          created_at?: string
-          id?: string
-          is_favorite?: boolean
-          name?: string
-          notes?: string | null
-          photo_path?: string | null
-          prep_minutes?: number | null
-          servings?: number
           updated_at?: string
           user_id?: string
         }
