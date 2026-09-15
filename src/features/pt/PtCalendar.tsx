@@ -75,7 +75,7 @@ export function PtCalendar({
               aria-pressed={trained}
               aria-label={`${date.getDate()} ${formatMonthYear(date.getFullYear(), date.getMonth())}${trained ? " — trained" : ""}`}
               className={cn(
-                "relative flex aspect-square min-h-11 items-center justify-center rounded-full text-sm font-semibold transition-all duration-200",
+                "relative flex aspect-square min-h-10 items-center justify-center rounded-full text-sm font-semibold transition-all duration-200",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 inMonth ? "text-foreground" : "text-muted-foreground/40",
                 trained

@@ -37,8 +37,8 @@ export function MealsPage() {
   return (
     <>
       <PageHeader icon={<UtensilsCrossed className="size-7" />} title="Meals" subtitle="Eat well, feel good" />
-      <Tabs defaultValue="target" className="space-y-5">
-        <TabsList className="grid h-11 w-full grid-cols-3 rounded-xl bg-lavender-faint p-1 sm:max-w-xl">
+      <Tabs defaultValue="target" className="space-y-4">
+        <TabsList className="grid h-10 w-full grid-cols-3 rounded-xl bg-lavender-faint p-1 sm:max-w-xl">
           <TabsTrigger value="target" className="h-9 px-1 text-[11px] sm:text-sm">Daily Target</TabsTrigger>
           <TabsTrigger value="plan" className="h-9 px-1 text-[11px] sm:text-sm">Meal Plan</TabsTrigger>
           <TabsTrigger value="options" className="h-9 px-1 text-[11px] sm:text-sm">Food Options</TabsTrigger>
@@ -75,7 +75,7 @@ function DailyTargetSection({ target, run }: { target: NutritionTarget | null; r
       <CardTitle action={<Button variant="soft" size="sm" onClick={() => setEditing(true)}><Pencil /> Edit Targets</Button>}>Daily Target</CardTitle>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
         {TARGETS.map(({ label, min, max, unit, icon: Icon }) => (
-          <div key={label} className="flex min-h-24 items-center gap-3 rounded-xl bg-lavender-faint/60 p-4">
+          <div key={label} className="flex min-h-20 items-center gap-3 rounded-xl bg-lavender-faint/60 p-3">
             <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-lavender-soft text-primary"><Icon className="size-4" /></span>
             <div className="min-w-0"><p className="text-xs font-medium text-muted-foreground">{label}</p><p className="mt-1 whitespace-nowrap text-lg font-bold tabular-nums">{numberText(values[min])} – {numberText(values[max])} <span className="text-xs font-medium text-muted-foreground">{unit}</span></p></div>
           </div>

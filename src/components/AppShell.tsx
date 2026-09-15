@@ -16,7 +16,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 hidden w-60 flex-col border-r border-border bg-sidebar px-4 py-6 lg:flex">
+      <aside className="fixed inset-y-0 left-0 hidden w-60 flex-col border-r border-border bg-sidebar px-4 py-5 lg:flex">
         <div className="px-2">
           <p className="text-base font-bold leading-tight">a healthier,</p>
           <p className="text-base font-bold leading-tight text-primary">happier me</p>
