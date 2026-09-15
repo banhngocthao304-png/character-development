@@ -42,13 +42,13 @@ export function PageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <header className="mb-3.5 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2 sm:flex sm:items-center sm:justify-between">
-      <div className="flex min-w-0 items-center gap-2.5">
+    <header className="mb-3 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2 sm:flex sm:items-center sm:justify-between">
+      <div className="flex min-w-0 items-center gap-2">
         {icon ? <span className="shrink-0 text-primary">{icon}</span> : null}
         <div className="min-w-0">
-          <h1 className="truncate text-2xl font-semibold sm:text-3xl">{title}</h1>
+          <h1 className="truncate text-xl font-semibold sm:text-2xl">{title}</h1>
           {subtitle ? (
-            <p className="mt-0.5 truncate text-xs text-muted-foreground">{subtitle}</p>
+            <p className="truncate text-[11px] text-muted-foreground">{subtitle}</p>
           ) : null}
         </div>
       </div>
