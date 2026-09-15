@@ -39,6 +39,9 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+  --color-change-positive: var(--change-positive);
+  --color-change-negative: var(--change-negative);
+  --color-change-neutral: var(--change-neutral);
   --color-lavender-soft: var(--lavender-soft);
   --color-lavender-faint: var(--lavender-faint);
   --color-border: var(--border);
@@ -92,6 +95,9 @@
   --destructive-foreground: oklch(0.995 0.002 285);
   --success: oklch(0.63 0.09 155);
   --success-foreground: oklch(0.995 0.002 285);
+  --change-positive: oklch(0.5 0.085 155);
+  --change-negative: oklch(0.56 0.105 24);
+  --change-neutral: oklch(0.56 0.035 290);
 
   --border: oklch(0.918 0.008 290);
   --input: oklch(0.918 0.008 290);
