@@ -30,7 +30,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 to={item.to}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors",
+                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                   active
                     ? "bg-sidebar-accent text-sidebar-accent-foreground"
                     : "text-muted-foreground hover:bg-lavender-faint hover:text-foreground",
@@ -45,7 +45,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <Link
           to="/settings"
           className={cn(
-            "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors",
+            "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
             pathname.startsWith("/settings")
               ? "bg-sidebar-accent text-sidebar-accent-foreground"
               : "text-muted-foreground hover:bg-lavender-faint hover:text-foreground",
@@ -82,7 +82,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               to={item.to}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "mx-2 flex flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-semibold transition-colors",
+                "mx-2 flex flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-medium transition-colors",
                 active ? "bg-lavender-soft text-accent-foreground" : "text-muted-foreground",
               )}
             >
