@@ -16,11 +16,11 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 hidden w-[17rem] flex-col border-r border-border bg-sidebar px-5 py-4 lg:flex">
-        <div className="px-2">
-          <p className="text-sm font-semibold leading-tight text-brand">Character Development</p>
+      <aside className="fixed inset-y-0 left-0 hidden w-[18rem] flex-col border-r border-border bg-sidebar px-6 py-4 lg:flex">
+        <div className="px-1">
+          <p className="text-[17px] font-semibold leading-tight text-brand">Character Development</p>
         </div>
-        <nav className="mt-6 flex flex-1 flex-col gap-0.5">
+        <nav className="mt-6 flex flex-1 flex-col gap-1">
           {NAV.map((item) => {
             const active = pathname.startsWith(item.to);
             return (
@@ -29,13 +29,13 @@ export function AppShell({ children }: { children: ReactNode }) {
                 to={item.to}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl px-2.5 py-2 text-xs font-medium transition-colors",
+                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium transition-colors",
                   active
                     ? "bg-sidebar-accent text-sidebar-accent-foreground"
                     : "text-muted-foreground hover:bg-lavender-faint hover:text-foreground",
                 )}
               >
-                <item.icon className="size-[18px] shrink-0" />
+                <item.icon className="size-[22px] shrink-0" />
                 <span className="truncate">{item.label}</span>
               </Link>
             );
@@ -44,13 +44,13 @@ export function AppShell({ children }: { children: ReactNode }) {
         <Link
           to="/settings"
           className={cn(
-            "flex items-center gap-3 rounded-xl px-2.5 py-2 text-xs font-medium transition-colors",
+            "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium transition-colors",
             pathname.startsWith("/settings")
               ? "bg-sidebar-accent text-sidebar-accent-foreground"
               : "text-muted-foreground hover:bg-lavender-faint hover:text-foreground",
           )}
         >
-          <Settings className="size-[18px] shrink-0" />
+          <Settings className="size-[20px] shrink-0" />
           Settings
         </Link>
       </aside>
