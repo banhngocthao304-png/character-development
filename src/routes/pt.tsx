@@ -208,7 +208,7 @@ function PtPage() {
             />
           ) : (
             <p className="rounded-2xl border border-dashed border-border bg-lavender-faint/40 px-4 py-8 text-center text-sm text-muted-foreground">
-              Select a completed PT day to view or add workout details.
+              Select a completed training day to view or add workout details.
             </p>
           )}
         </Card>
