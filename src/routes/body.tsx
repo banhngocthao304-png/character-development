@@ -193,11 +193,16 @@ function BodyPage() {
 
 const METRICS = [
   { key: "weight_kg", label: "Weight", unit: "kg" },
+  { key: "bmi", label: "BMI", unit: "" },
+  { key: "body_fat_mass_kg", label: "Body Fat Mass", unit: "kg" },
+  { key: "muscle_mass_kg", label: "Muscle Mass", unit: "kg" },
   { key: "waist_cm", label: "Waist", unit: "cm" },
-  { key: "hip_cm", label: "Hip", unit: "cm" },
+  { key: "belly_cm", label: "Belly", unit: "cm" },
+  { key: "hips_cm", label: "Hips", unit: "cm" },
+  { key: "glutes_cm", label: "Glutes", unit: "cm" },
+  { key: "upper_arms_cm", label: "Upper Arms", unit: "cm" },
+  { key: "thighs_cm", label: "Thighs", unit: "cm" },
   { key: "bust_cm", label: "Bust", unit: "cm" },
-  { key: "thigh_cm", label: "Thigh", unit: "cm" },
-  { key: "arm_cm", label: "Arm", unit: "cm" },
 ] as const;
 type MetricKey = (typeof METRICS)[number]["key"];
 type RangeKey = "1M" | "3M" | "6M" | "1Y" | "All";
@@ -252,7 +257,7 @@ function MonthlyCheckIn({ month, entry, entries, onAdd, onEdit }: { month: strin
           const previous = entries.find((item) => item.measurement_date.slice(0, 7) < month && item[metric.key] != null);
           const previousValue = previous?.[metric.key];
           const difference = value != null && previousValue != null ? Number(value) - Number(previousValue) : null;
-          return <div key={metric.key} className="min-h-24 rounded-xl bg-lavender-faint/55 p-3.5"><p className="text-xs font-medium text-muted-foreground">{metric.label}</p>{value == null ? <p className="mt-3 text-sm text-muted-foreground">Not recorded</p> : <><p className="mt-1 text-xl font-bold tabular-nums">{formatNumber(Number(value))} <span className="text-sm font-medium text-muted-foreground">{metric.unit}</span></p>{difference != null && difference !== 0 ? <p className="mt-1 text-xs font-medium text-primary">{difference < 0 ? "↓" : "↑"} {formatNumber(Math.abs(difference))} {metric.unit} from {previous ? monthName(previous.measurement_date.slice(0, 7), false) : "previous"}</p> : null}</>}</div>;
+          return <div key={metric.key} className="min-h-24 rounded-xl bg-lavender-faint/55 p-3.5"><p className="text-xs font-medium text-muted-foreground">{metric.label}</p>{value == null ? <p className="mt-2 text-xl font-bold text-muted-foreground">—</p> : <><p className="mt-1 text-xl font-bold tabular-nums">{formatNumber(Number(value))} <span className="text-sm font-medium text-muted-foreground">{metric.unit}</span></p>{difference != null && difference !== 0 ? <p className="mt-1 text-xs font-medium text-primary">{difference < 0 ? "↓" : "↑"} {formatNumber(Math.abs(difference))} {metric.unit} from {previous ? monthName(previous.measurement_date.slice(0, 7), false) : "previous"}</p> : null}</>}</div>;
         })}
       </div>
     </div>
@@ -345,7 +350,12 @@ function MeasurementForm({ open, entry, allEntries, selectedMonth, onOpenChange,
   const finalDay = new Date(Number(year), Number(monthNumber), 0).getDate();
   const minimumDate = `${selectedMonth}-01`;
   const maximumDate = `${selectedMonth}-${String(finalDay).padStart(2, "0")}`;
-  const initial = (): FormState => ({ measurement_date: entry?.measurement_date ?? defaultDate, weight_kg: entry?.weight_kg?.toString() ?? "", waist_cm: entry?.waist_cm?.toString() ?? "", hip_cm: entry?.hip_cm?.toString() ?? "", bust_cm: entry?.bust_cm?.toString() ?? "", thigh_cm: entry?.thigh_cm?.toString() ?? "", arm_cm: entry?.arm_cm?.toString() ?? "" });
+  const initial = (): FormState => ({
+    measurement_date: entry?.measurement_date ?? defaultDate,
+    ...(Object.fromEntries(
+      METRICS.map((item) => [item.key, entry?.[item.key]?.toString() ?? ""]),
+    ) as Record<MetricKey, string>),
+  });
   const [form, setForm] = useState<FormState>(initial);
   const existing = allEntries.find((item) => item.measurement_date === form.measurement_date && item.id !== entry?.id) ?? null;
   const hasValue = METRICS.some((item) => form[item.key] !== "");

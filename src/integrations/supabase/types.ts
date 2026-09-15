@@ -16,40 +16,55 @@ export type Database = {
     Tables: {
       body_measurements: {
         Row: {
-          arm_cm: number | null
+          belly_cm: number | null
+          bmi: number | null
+          body_fat_mass_kg: number | null
           bust_cm: number | null
           created_at: string
-          hip_cm: number | null
+          glutes_cm: number | null
+          hips_cm: number | null
           id: string
           measurement_date: string
-          thigh_cm: number | null
+          muscle_mass_kg: number | null
+          thighs_cm: number | null
           updated_at: string
+          upper_arms_cm: number | null
           user_id: string
           waist_cm: number | null
           weight_kg: number | null
         }
         Insert: {
-          arm_cm?: number | null
+          belly_cm?: number | null
+          bmi?: number | null
+          body_fat_mass_kg?: number | null
           bust_cm?: number | null
           created_at?: string
-          hip_cm?: number | null
+          glutes_cm?: number | null
+          hips_cm?: number | null
           id?: string
           measurement_date: string
-          thigh_cm?: number | null
+          muscle_mass_kg?: number | null
+          thighs_cm?: number | null
           updated_at?: string
+          upper_arms_cm?: number | null
           user_id?: string
           waist_cm?: number | null
           weight_kg?: number | null
         }
         Update: {
-          arm_cm?: number | null
+          belly_cm?: number | null
+          bmi?: number | null
+          body_fat_mass_kg?: number | null
           bust_cm?: number | null
           created_at?: string
-          hip_cm?: number | null
+          glutes_cm?: number | null
+          hips_cm?: number | null
           id?: string
           measurement_date?: string
-          thigh_cm?: number | null
+          muscle_mass_kg?: number | null
+          thighs_cm?: number | null
           updated_at?: string
+          upper_arms_cm?: number | null
           user_id?: string
           waist_cm?: number | null
           weight_kg?: number | null
