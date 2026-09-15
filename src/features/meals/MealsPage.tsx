@@ -38,7 +38,7 @@ export function MealsPage() {
     <>
       <PageHeader icon={<UtensilsCrossed className="size-7" />} title="Meals" subtitle="eat like an adult" />
       <Tabs defaultValue="target" className="space-y-3">
-        <TabsList className="grid h-9 w-full grid-cols-3 rounded-xl bg-lavender-faint p-1 sm:max-w-xl">
+        <TabsList className="grid h-8 w-full grid-cols-3 rounded-xl bg-lavender-faint p-0.5 sm:max-w-xl">
           <TabsTrigger value="target" className="h-9 px-1 text-[11px] sm:text-sm">Daily Target</TabsTrigger>
           <TabsTrigger value="plan" className="h-9 px-1 text-[11px] sm:text-sm">Meal Plan</TabsTrigger>
           <TabsTrigger value="options" className="h-9 px-1 text-[11px] sm:text-sm">Food Options</TabsTrigger>
@@ -166,7 +166,7 @@ function FoodOptionsSection({ categories, run }: { categories: CategoryWithOptio
         const editing = editingCategoryId === category.id;
         return <Card key={category.id} className="overflow-hidden p-0 sm:p-0">
           <div className="flex min-h-12 items-center gap-1 px-3 sm:px-4">
-            <Button type="button" variant="ghost" className="h-9 min-w-0 flex-1 justify-start px-1 text-left text-base font-semibold" aria-expanded={expanded} onClick={() => toggleExpanded(category.id)}>
+            <Button type="button" variant="ghost" className="h-9 min-w-0 flex-1 justify-start px-1 text-left text-sm font-semibold" aria-expanded={expanded} onClick={() => toggleExpanded(category.id)}>
               <span className="min-w-0 flex-1 truncate">{category.name}</span>{expanded ? <ChevronUp /> : <ChevronDown />}
             </Button>
             <Button type="button" variant="ghost" size="sm" className="text-primary" onClick={() => { setEditingCategoryId(editing ? null : category.id); if (!expanded) setExpandedIds((current) => new Set(current).add(category.id)); }}>{editing ? "Done" : "Edit"}</Button>
