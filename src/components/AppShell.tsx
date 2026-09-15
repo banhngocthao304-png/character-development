@@ -67,7 +67,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </Button>
       </header>
 
-      <main className="lg:pl-[17rem]">
+      <main className="lg:pl-[18rem]">
         <div className="mx-auto w-full max-w-[1400px] px-3.5 pb-24 pt-3.5 sm:px-5 lg:px-8 lg:pb-8 lg:pt-5">
           {children}
         </div>
