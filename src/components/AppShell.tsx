@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 const NAV = [
-  { to: "/pt", label: "PT Tracker", short: "PT", icon: Dumbbell },
+  { to: "/pt", label: "Training", short: "Training", icon: Dumbbell },
   { to: "/body", label: "Body Measurements", short: "Body", icon: LineChart },
   { to: "/meals", label: "Meals", short: "Meals", icon: UtensilsCrossed },
 ] as const;
@@ -67,7 +67,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </header>
 
       <main className="lg:pl-60">
-        <div className="mx-auto w-full max-w-[1400px] px-4 pb-28 pt-6 sm:px-6 lg:px-10 lg:pb-12">
+        <div className="mx-auto w-full max-w-[1400px] px-4 pb-28 pt-5 sm:px-6 lg:px-10 lg:pb-10 lg:pt-6">
           {children}
         </div>
       </main>
