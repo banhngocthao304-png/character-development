@@ -36,8 +36,8 @@ export function PtCalendar({
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between gap-2">
-        <h2 className="min-w-0 truncate text-base font-bold sm:text-lg">
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <h2 className="min-w-0 truncate text-base font-semibold sm:text-lg">
           {formatMonthYear(year, month)}
         </h2>
         <div className="flex shrink-0 items-center gap-1">
@@ -75,7 +75,7 @@ export function PtCalendar({
               aria-pressed={trained}
               aria-label={`${date.getDate()} ${formatMonthYear(date.getFullYear(), date.getMonth())}${trained ? " — trained" : ""}`}
               className={cn(
-                "relative flex aspect-square min-h-10 items-center justify-center rounded-full text-sm font-semibold transition-all duration-200",
+                "relative flex aspect-square min-h-9 items-center justify-center rounded-full text-sm font-semibold transition-all duration-200",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 inMonth ? "text-foreground" : "text-muted-foreground/40",
                 trained
@@ -102,7 +102,7 @@ export function PtCalendar({
         })}
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+      <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
         <span className="flex items-center gap-2">
           <span className="inline-flex size-3.5 items-center justify-center rounded-full bg-primary" />
           Trained

@@ -65,7 +65,7 @@ function SettingsPage() {
         {settingsQuery.isLoading ? (
           <Skeleton className="h-32" />
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div>
               <FieldLabel htmlFor="sessions">Sessions per period</FieldLabel>
               <Input

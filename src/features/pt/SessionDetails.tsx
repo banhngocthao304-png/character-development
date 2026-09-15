@@ -103,9 +103,9 @@ export function SessionDetails({
 
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div className="min-w-0">
-          <p className="truncate text-base font-bold sm:text-lg">{formatDate(session.session_date)}</p>
+          <p className="truncate text-base font-semibold sm:text-lg">{formatDate(session.session_date)}</p>
           <p className="text-xs text-muted-foreground">1 PT session</p>
         </div>
         <div className="flex items-center gap-2">
@@ -122,7 +122,7 @@ export function SessionDetails({
         </div>
       </div>
 
-      <div className="mb-5">
+      <div className="mb-3.5">
         <FieldLabel hint="(optional)">Session type</FieldLabel>
         <div className="flex flex-wrap gap-2">
           {SESSION_TYPES.map((type) => {
@@ -156,7 +156,7 @@ export function SessionDetails({
             <Skeleton className="h-24" />
           </>
         ) : exercises.length === 0 ? (
-          <p className="rounded-2xl border border-dashed border-border bg-lavender-faint/40 px-4 py-6 text-center text-sm text-muted-foreground">
+          <p className="rounded-2xl border border-dashed border-border bg-lavender-faint/40 px-4 py-4 text-center text-sm text-muted-foreground">
             No exercises recorded yet.
           </p>
         ) : (
@@ -179,7 +179,7 @@ export function SessionDetails({
 
       <Button
         variant="soft"
-        className="mt-4 w-full"
+        className="mt-3 w-full"
         onClick={() => addMutation.mutate()}
         disabled={addMutation.isPending}
       >
@@ -187,7 +187,7 @@ export function SessionDetails({
         Add exercise
       </Button>
 
-      <div className="mt-6">
+      <div className="mt-3">
         <FieldLabel htmlFor="session-note" hint="(optional)">
           Session note
         </FieldLabel>
@@ -372,7 +372,7 @@ function ExerciseRow({
             aria-label="Weight unit"
             value={unit}
             onChange={(e) => setUnit(e.target.value)}
-            className="h-10 rounded-xl border border-input bg-card px-2 text-sm font-semibold"
+            className="h-9 rounded-xl border border-input bg-card px-2 text-sm font-semibold"
           >
             <option value="kg">kg</option>
             <option value="lb">lb</option>

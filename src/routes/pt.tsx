@@ -143,18 +143,18 @@ function PtPage() {
         subtitle="paid to suffer..."
       />
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-5">
-        <div className="space-y-4">
+      <div className="grid gap-3 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-3.5">
+        <div className="space-y-3">
           <Card>
             <CardTitle>Current period</CardTitle>
             {settingsQuery.isLoading || sessionsQuery.isLoading ? (
               <Skeleton className="h-24" />
             ) : (
               <>
-                <p className="text-base font-bold sm:text-lg">
+                <p className="text-base font-semibold sm:text-lg">
                   {formatDateShort(period.startISO)} – {formatDateShort(period.endISO)}
                 </p>
-                <p className="mt-2 text-xl font-bold text-primary">
+                <p className="mt-2 text-xl font-semibold text-primary">
                   {periodCount} / {perPeriod}
                   <span className="ml-2 text-sm font-semibold text-muted-foreground">sessions</span>
                 </p>
