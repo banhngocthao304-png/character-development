@@ -50,7 +50,7 @@ export function PtCalendar({
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-1 text-center text-[11px] font-semibold text-muted-foreground sm:text-xs">
+      <div className="grid grid-cols-7 gap-0.5 text-center text-[11px] font-medium text-muted-foreground sm:text-xs">
         {WEEKDAY_LABELS.map((d) => (
           <div key={d} className="py-1">
             {d}
@@ -58,7 +58,7 @@ export function PtCalendar({
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 gap-0.5">
         {cells.map((iso) => {
           const date = parseISODate(iso);
           const inMonth = date.getMonth() === month;
@@ -75,7 +75,7 @@ export function PtCalendar({
               aria-pressed={trained}
               aria-label={`${date.getDate()} ${formatMonthYear(date.getFullYear(), date.getMonth())}${trained ? " — trained" : ""}`}
               className={cn(
-                "relative flex aspect-square min-h-9 items-center justify-center rounded-full text-sm font-semibold transition-all duration-200",
+                "relative mx-auto flex size-9 max-w-full items-center justify-center rounded-full text-sm font-medium transition-all duration-200",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 inMonth ? "text-foreground" : "text-muted-foreground/40",
                 trained
@@ -102,7 +102,7 @@ export function PtCalendar({
         })}
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+      <div className="mt-2.5 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
         <span className="flex items-center gap-2">
           <span className="inline-flex size-3.5 items-center justify-center rounded-full bg-primary" />
           Trained

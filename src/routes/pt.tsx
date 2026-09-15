@@ -154,7 +154,7 @@ function PtPage() {
                 <p className="text-base font-semibold sm:text-lg">
                   {formatDateShort(period.startISO)} – {formatDateShort(period.endISO)}
                 </p>
-                <p className="mt-2 text-xl font-semibold text-primary">
+                <p className="mt-1 text-xl font-semibold text-primary">
                   {periodCount} / {perPeriod}
                   <span className="ml-2 text-sm font-semibold text-muted-foreground">sessions</span>
                 </p>
