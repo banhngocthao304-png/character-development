@@ -20,10 +20,11 @@ export type PtExercise = {
   sort_order: number;
 };
 
+/** Single-user private app: every row belongs to this fixed owner. */
+export const OWNER_ID = "00000000-0000-0000-0000-000000000001";
+
 export async function currentUserId(): Promise<string> {
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data.user) throw new Error("You need to be signed in.");
-  return data.user.id;
+  return OWNER_ID;
 }
 
 export async function fetchPtSettings() {
