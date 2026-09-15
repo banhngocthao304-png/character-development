@@ -50,6 +50,7 @@
   --color-change-positive: var(--change-positive);
   --color-change-negative: var(--change-negative);
   --color-change-neutral: var(--change-neutral);
+  --color-brand: var(--brand);
   --color-lavender-soft: var(--lavender-soft);
   --color-lavender-faint: var(--lavender-faint);
   --color-border: var(--border);
@@ -106,6 +107,8 @@
   --change-positive: oklch(0.5 0.085 155);
   --change-negative: oklch(0.56 0.105 24);
   --change-neutral: oklch(0.56 0.035 290);
+
+  --brand: oklch(0.53 0.12 291);
 
   --border: oklch(0.918 0.008 290);
   --input: oklch(0.918 0.008 290);
