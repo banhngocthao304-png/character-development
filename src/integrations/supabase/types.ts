@@ -56,104 +56,6 @@ export type Database = {
         }
         Relationships: []
       }
-      meal_log_ingredients: {
-        Row: {
-          id: string
-          ingredient_name: string
-          meal_log_id: string
-          quantity: number | null
-          sort_order: number
-          unit: string | null
-          user_id: string
-        }
-        Insert: {
-          id?: string
-          ingredient_name: string
-          meal_log_id: string
-          quantity?: number | null
-          sort_order?: number
-          unit?: string | null
-          user_id: string
-        }
-        Update: {
-          id?: string
-          ingredient_name?: string
-          meal_log_id?: string
-          quantity?: number | null
-          sort_order?: number
-          unit?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "meal_log_ingredients_meal_log_id_fkey"
-            columns: ["meal_log_id"]
-            isOneToOne: false
-            referencedRelation: "meal_logs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      meal_logs: {
-        Row: {
-          actual_time: string | null
-          created_at: string
-          id: string
-          log_date: string
-          meal_name: string
-          meal_type: string
-          notes: string | null
-          photo_path: string | null
-          planned_meal_id: string | null
-          recipe_id: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          actual_time?: string | null
-          created_at?: string
-          id?: string
-          log_date: string
-          meal_name: string
-          meal_type: string
-          notes?: string | null
-          photo_path?: string | null
-          planned_meal_id?: string | null
-          recipe_id?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          actual_time?: string | null
-          created_at?: string
-          id?: string
-          log_date?: string
-          meal_name?: string
-          meal_type?: string
-          notes?: string | null
-          photo_path?: string | null
-          planned_meal_id?: string | null
-          recipe_id?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "meal_logs_planned_meal_id_fkey"
-            columns: ["planned_meal_id"]
-            isOneToOne: false
-            referencedRelation: "planned_meals"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "meal_logs_recipe_id_fkey"
-            columns: ["recipe_id"]
-            isOneToOne: false
-            referencedRelation: "recipes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       meal_plan_days: {
         Row: {
           created_at: string
@@ -223,7 +125,6 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          logged: boolean
           meal_name: string
           meal_plan_day_id: string
           meal_type: string
@@ -237,7 +138,6 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
-          logged?: boolean
           meal_name: string
           meal_plan_day_id: string
           meal_type: string
@@ -251,7 +151,6 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
-          logged?: boolean
           meal_name?: string
           meal_plan_day_id?: string
           meal_type?: string
@@ -303,82 +202,115 @@ export type Database = {
         }
         Relationships: []
       }
-      pt_cycles: {
+      pt_session_exercises: {
         Row: {
           created_at: string
-          end_date: string
+          exercise_name: string
+          exercise_note: string | null
           id: string
-          note: string | null
-          start_date: string
-          status: string
-          total_sessions: number | null
+          pt_session_id: string
+          reps: number | null
+          sets: number | null
+          sort_order: number
           updated_at: string
           user_id: string
+          weight: number | null
+          weight_unit: string
         }
         Insert: {
           created_at?: string
-          end_date: string
+          exercise_name: string
+          exercise_note?: string | null
           id?: string
-          note?: string | null
-          start_date: string
-          status?: string
-          total_sessions?: number | null
+          pt_session_id: string
+          reps?: number | null
+          sets?: number | null
+          sort_order?: number
           updated_at?: string
           user_id: string
+          weight?: number | null
+          weight_unit?: string
         }
         Update: {
           created_at?: string
-          end_date?: string
+          exercise_name?: string
+          exercise_note?: string | null
           id?: string
-          note?: string | null
-          start_date?: string
-          status?: string
-          total_sessions?: number | null
+          pt_session_id?: string
+          reps?: number | null
+          sets?: number | null
+          sort_order?: number
           updated_at?: string
           user_id?: string
+          weight?: number | null
+          weight_unit?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "pt_session_exercises_pt_session_id_fkey"
+            columns: ["pt_session_id"]
+            isOneToOne: false
+            referencedRelation: "pt_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pt_sessions: {
         Row: {
           created_at: string
-          cycle_id: string
           id: string
-          note: string | null
           session_date: string
+          session_note: string | null
           session_type: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
-          cycle_id: string
           id?: string
-          note?: string | null
           session_date: string
+          session_note?: string | null
           session_type?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
-          cycle_id?: string
           id?: string
-          note?: string | null
           session_date?: string
+          session_note?: string | null
           session_type?: string | null
           updated_at?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "pt_sessions_cycle_id_fkey"
-            columns: ["cycle_id"]
-            isOneToOne: false
-            referencedRelation: "pt_cycles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
+      }
+      pt_settings: {
+        Row: {
+          created_at: string
+          id: string
+          period_start_day: number
+          sessions_per_period: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          period_start_day?: number
+          sessions_per_period?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          period_start_day?: number
+          sessions_per_period?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       recipe_ingredients: {
         Row: {
