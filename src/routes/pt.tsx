@@ -30,12 +30,11 @@ import { daysLeft, formatDateShort, parseISODate, todayISO } from "@/lib/dates";
 export const Route = createFileRoute("/pt")({
   head: () => ({
     meta: [
-      { title: "PT Tracker — a healthier, happier me" },
       {
         name: "description",
         content: "Mark the days you trained with your PT and record what you lifted each session.",
       },
-      { property: "og:title", content: "PT Tracker" },
+      { property: "og:title", content: "Training" },
       {
         property: "og:description",
         content: "Mark the days you trained with your PT and record what you lifted.",

@@ -18,8 +18,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 hidden w-56 flex-col border-r border-border bg-sidebar px-3 py-4 lg:flex">
         <div className="px-2">
-          <p className="text-sm font-medium leading-tight">a healthier,</p>
-          <p className="text-sm font-medium leading-tight text-primary">happier me</p>
+          <p className="text-sm font-semibold leading-tight text-brand">Character Development</p>
         </div>
         <nav className="mt-6 flex flex-1 flex-col gap-0.5">
           {NAV.map((item) => {
@@ -59,7 +58,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Mobile top bar */}
       <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border bg-background/90 px-4 py-1.5 backdrop-blur lg:hidden">
         <p className="truncate text-[18px] font-semibold leading-none tracking-tight text-brand sm:text-[20px]">
-          character development&nbsp;
+          Character Development&nbsp;
         </p>
         <Button asChild variant="ghost" size="iconSm" aria-label="Settings" className="text-brand hover:text-brand/80">
           <Link to="/settings">

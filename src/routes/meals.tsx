@@ -4,7 +4,6 @@ import { MealsPage } from "@/features/meals/MealsPage";
 export const Route = createFileRoute("/meals")({
   head: () => ({
     meta: [
-      { title: "Meals — a healthier, happier me" },
       {
         name: "description",
         content: "Keep daily nutrition targets, a current meal plan, and reusable food options.",

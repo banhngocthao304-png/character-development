@@ -52,7 +52,6 @@ import { formatDate, formatDateShort, parseISODate, todayISO } from "@/lib/dates
 export const Route = createFileRoute("/body")({
   head: () => ({
     meta: [
-      { title: "Body Measurements — a healthier, happier me" },
       {
         name: "description",
         content: "Record your weight and body measurements over time and watch the trend.",
