@@ -37,7 +37,7 @@ export type Database = {
           measurement_date: string
           thigh_cm?: number | null
           updated_at?: string
-          user_id: string
+          user_id?: string
           waist_cm?: number | null
           weight_kg?: number | null
         }
@@ -71,7 +71,7 @@ export type Database = {
           id?: string
           plan_date: string
           updated_at?: string
-          user_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string
@@ -100,7 +100,7 @@ export type Database = {
           quantity?: number | null
           sort_order?: number
           unit?: string | null
-          user_id: string
+          user_id?: string
         }
         Update: {
           id?: string
@@ -146,7 +146,7 @@ export type Database = {
           planned_time?: string | null
           recipe_id?: string | null
           updated_at?: string
-          user_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string
@@ -191,7 +191,7 @@ export type Database = {
           display_name?: string | null
           id?: string
           updated_at?: string
-          user_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string
@@ -227,7 +227,7 @@ export type Database = {
           sets?: number | null
           sort_order?: number
           updated_at?: string
-          user_id: string
+          user_id?: string
           weight?: number | null
           weight_unit?: string
         }
@@ -272,7 +272,7 @@ export type Database = {
           session_note?: string | null
           session_type?: string | null
           updated_at?: string
-          user_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string
@@ -300,7 +300,7 @@ export type Database = {
           period_start_day?: number
           sessions_per_period?: number
           updated_at?: string
-          user_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string
@@ -329,7 +329,7 @@ export type Database = {
           recipe_id: string
           sort_order?: number
           unit?: string | null
-          user_id: string
+          user_id?: string
         }
         Update: {
           id?: string
@@ -363,7 +363,7 @@ export type Database = {
           instruction: string
           recipe_id: string
           step_number?: number
-          user_id: string
+          user_id?: string
         }
         Update: {
           id?: string
@@ -393,7 +393,7 @@ export type Database = {
           id?: string
           recipe_id: string
           tag: string
-          user_id: string
+          user_id?: string
         }
         Update: {
           id?: string
@@ -436,7 +436,7 @@ export type Database = {
           prep_minutes?: number | null
           servings?: number
           updated_at?: string
-          user_id: string
+          user_id?: string
         }
         Update: {
           category?: string

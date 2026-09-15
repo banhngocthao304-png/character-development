@@ -10,107 +10,73 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as AuthenticatedBodyRouteImport } from './routes/_authenticated/body'
-import { Route as AuthenticatedMealsRouteImport } from './routes/_authenticated/meals'
-import { Route as AuthenticatedPtRouteImport } from './routes/_authenticated/pt'
-import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as BodyRouteImport } from './routes/body'
+import { Route as MealsRouteImport } from './routes/meals'
+import { Route as PtRouteImport } from './routes/pt'
+import { Route as SettingsRouteImport } from './routes/settings'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedBodyRoute = AuthenticatedBodyRouteImport.update({
+const BodyRoute = BodyRouteImport.update({
   id: '/body',
   path: '/body',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedMealsRoute = AuthenticatedMealsRouteImport.update({
+const MealsRoute = MealsRouteImport.update({
   id: '/meals',
   path: '/meals',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedPtRoute = AuthenticatedPtRouteImport.update({
+const PtRoute = PtRouteImport.update({
   id: '/pt',
   path: '/pt',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
-  '/reset-password': typeof ResetPasswordRoute
-  '/body': typeof AuthenticatedBodyRoute
-  '/meals': typeof AuthenticatedMealsRoute
-  '/pt': typeof AuthenticatedPtRoute
-  '/settings': typeof AuthenticatedSettingsRoute
+  '/body': typeof BodyRoute
+  '/meals': typeof MealsRoute
+  '/pt': typeof PtRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
-  '/reset-password': typeof ResetPasswordRoute
-  '/body': typeof AuthenticatedBodyRoute
-  '/meals': typeof AuthenticatedMealsRoute
-  '/pt': typeof AuthenticatedPtRoute
-  '/settings': typeof AuthenticatedSettingsRoute
+  '/body': typeof BodyRoute
+  '/meals': typeof MealsRoute
+  '/pt': typeof PtRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRoute
-  '/reset-password': typeof ResetPasswordRoute
-  '/_authenticated/body': typeof AuthenticatedBodyRoute
-  '/_authenticated/meals': typeof AuthenticatedMealsRoute
-  '/_authenticated/pt': typeof AuthenticatedPtRoute
-  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/body': typeof BodyRoute
+  '/meals': typeof MealsRoute
+  '/pt': typeof PtRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    '/' | '/auth' | '/reset-password' | '/body' | '/meals' | '/pt' | '/settings'
+  fullPaths: '/' | '/body' | '/meals' | '/pt' | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    '/' | '/auth' | '/reset-password' | '/body' | '/meals' | '/pt' | '/settings'
-  id:
-    | '__root__'
-    | '/'
-    | '/_authenticated'
-    | '/auth'
-    | '/reset-password'
-    | '/_authenticated/body'
-    | '/_authenticated/meals'
-    | '/_authenticated/pt'
-    | '/_authenticated/settings'
+  to: '/' | '/body' | '/meals' | '/pt' | '/settings'
+  id: '__root__' | '/' | '/body' | '/meals' | '/pt' | '/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
-  ResetPasswordRoute: typeof ResetPasswordRoute
+  BodyRoute: typeof BodyRoute
+  MealsRoute: typeof MealsRoute
+  PtRoute: typeof PtRoute
+  SettingsRoute: typeof SettingsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -122,80 +88,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/body': {
-      id: '/_authenticated/body'
+    '/body': {
+      id: '/body'
       path: '/body'
       fullPath: '/body'
-      preLoaderRoute: typeof AuthenticatedBodyRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof BodyRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/meals': {
-      id: '/_authenticated/meals'
+    '/meals': {
+      id: '/meals'
       path: '/meals'
       fullPath: '/meals'
-      preLoaderRoute: typeof AuthenticatedMealsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof MealsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/pt': {
-      id: '/_authenticated/pt'
+    '/pt': {
+      id: '/pt'
       path: '/pt'
       fullPath: '/pt'
-      preLoaderRoute: typeof AuthenticatedPtRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof PtRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/settings': {
-      id: '/_authenticated/settings'
+    '/settings': {
+      id: '/settings'
       path: '/settings'
       fullPath: '/settings'
-      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface AuthenticatedRouteRouteChildren {
-  AuthenticatedBodyRoute: typeof AuthenticatedBodyRoute
-  AuthenticatedMealsRoute: typeof AuthenticatedMealsRoute
-  AuthenticatedPtRoute: typeof AuthenticatedPtRoute
-  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
-}
-
-const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedBodyRoute: AuthenticatedBodyRoute,
-  AuthenticatedMealsRoute: AuthenticatedMealsRoute,
-  AuthenticatedPtRoute: AuthenticatedPtRoute,
-  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
-}
-
-const AuthenticatedRouteRouteWithChildren =
-  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
-  ResetPasswordRoute: ResetPasswordRoute,
+  BodyRoute: BodyRoute,
+  MealsRoute: MealsRoute,
+  PtRoute: PtRoute,
+  SettingsRoute: SettingsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

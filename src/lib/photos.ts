@@ -27,10 +27,8 @@ async function compress(file: File, maxSize = 1400): Promise<Blob> {
 }
 
 export async function uploadPhoto(file: File): Promise<string> {
-  const { data: userData, error: userError } = await supabase.auth.getUser();
-  if (userError || !userData.user) throw new Error("You need to be signed in to upload a photo.");
   const blob = await compress(file);
-  const path = `${userData.user.id}/${crypto.randomUUID()}.jpg`;
+  const path = `photos/${crypto.randomUUID()}.jpg`;
   const { error } = await supabase.storage
     .from(PHOTO_BUCKET)
     .upload(path, blob, { contentType: "image/jpeg", upsert: false });

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { currentUserId, fetchPtSettings } from "@/features/pt/api";
 
-export const Route = createFileRoute("/_authenticated/settings")({
+export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
       { title: "Settings — a healthier, happier me" },

@@ -1,8 +1,6 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { Dumbbell, LineChart, Settings, UtensilsCrossed } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -14,15 +12,6 @@ const NAV = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  async function signOut() {
-    await queryClient.cancelQueries();
-    queryClient.clear();
-    await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -70,16 +59,11 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Mobile top bar */}
       <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border bg-background/90 px-4 py-3 backdrop-blur lg:hidden">
         <p className="truncate text-sm font-extrabold">a healthier, happier me</p>
-        <div className="flex items-center gap-1">
-          <Button asChild variant="ghost" size="iconSm" aria-label="Settings">
-            <Link to="/settings">
-              <Settings />
-            </Link>
-          </Button>
-          <Button variant="ghost" size="sm" onClick={signOut}>
-            Log out
-          </Button>
-        </div>
+        <Button asChild variant="ghost" size="iconSm" aria-label="Settings">
+          <Link to="/settings">
+            <Settings />
+          </Link>
+        </Button>
       </header>
 
       <main className="lg:pl-60">
