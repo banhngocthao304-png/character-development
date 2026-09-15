@@ -5,22 +5,38 @@ export type BodyMeasurement = {
   id: string;
   measurement_date: string;
   weight_kg: number | null;
+  bmi: number | null;
+  body_fat_mass_kg: number | null;
+  muscle_mass_kg: number | null;
   waist_cm: number | null;
-  hip_cm: number | null;
+  belly_cm: number | null;
+  hips_cm: number | null;
+  glutes_cm: number | null;
+  upper_arms_cm: number | null;
+  thighs_cm: number | null;
   bust_cm: number | null;
-  thigh_cm: number | null;
-  arm_cm: number | null;
   created_at: string;
   updated_at: string;
 };
 
 export type MeasurementValues = Pick<
   BodyMeasurement,
-  "measurement_date" | "weight_kg" | "waist_cm" | "hip_cm" | "bust_cm" | "thigh_cm" | "arm_cm"
+  | "measurement_date"
+  | "weight_kg"
+  | "bmi"
+  | "body_fat_mass_kg"
+  | "muscle_mass_kg"
+  | "waist_cm"
+  | "belly_cm"
+  | "hips_cm"
+  | "glutes_cm"
+  | "upper_arms_cm"
+  | "thighs_cm"
+  | "bust_cm"
 >;
 
 const SELECT_FIELDS =
-  "id, measurement_date, weight_kg, waist_cm, hip_cm, bust_cm, thigh_cm, arm_cm, created_at, updated_at";
+  "id, measurement_date, weight_kg, bmi, body_fat_mass_kg, muscle_mass_kg, waist_cm, belly_cm, hips_cm, glutes_cm, upper_arms_cm, thighs_cm, bust_cm, created_at, updated_at";
 
 export async function fetchBodyMeasurements(): Promise<BodyMeasurement[]> {
   const { data, error } = await supabase
