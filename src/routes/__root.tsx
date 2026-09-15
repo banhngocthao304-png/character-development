@@ -86,7 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "A calm private diary for PT sessions, body measurements, recipes and meal plans.",
+          "A calm private diary for workouts, body measurements, nutrition targets and meal plans.",
       },
       { property: "og:title", content: "a healthier, happier me" },
       {

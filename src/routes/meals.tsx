@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { UtensilsCrossed } from "lucide-react";
-import { Card, EmptyState, PageHeader } from "@/components/ui-kit";
+import { MealsPage } from "@/features/meals/MealsPage";
 
 export const Route = createFileRoute("/meals")({
   head: () => ({
@@ -8,32 +7,16 @@ export const Route = createFileRoute("/meals")({
       { title: "Meals — a healthier, happier me" },
       {
         name: "description",
-        content: "Plan what you'll cook each day and keep your personal recipe library.",
+        content: "Keep daily nutrition targets, a current meal plan, and reusable food options.",
       },
       { property: "og:title", content: "Meals" },
       {
         property: "og:description",
-        content: "Plan what you'll cook each day and keep your personal recipe library.",
+        content: "A simple personal reference for nutrition targets, meal planning, and food options.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: MealsPage,
 });
-
-function MealsPage() {
-  return (
-    <>
-      <PageHeader
-        icon={<UtensilsCrossed className="size-7" />}
-        title="Meals"
-        subtitle="Plan it, cook it, love it"
-      />
-      <Card>
-        <EmptyState
-          title="Plan and Recipes are coming next"
-          description="This section is being built right now."
-        />
-      </Card>
-    </>
-  );
-}
