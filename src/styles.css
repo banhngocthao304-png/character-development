@@ -50,6 +50,7 @@
   --color-change-positive: var(--change-positive);
   --color-change-negative: var(--change-negative);
   --color-change-neutral: var(--change-neutral);
+  --color-brand: var(--brand);
   --color-lavender-soft: var(--lavender-soft);
   --color-lavender-faint: var(--lavender-faint);
   --color-border: var(--border);
