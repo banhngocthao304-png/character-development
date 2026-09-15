@@ -73,11 +73,11 @@ function DailyTargetSection({ target, run }: { target: NutritionTarget | null; r
   return (
     <Card>
       <CardTitle action={<Button variant="soft" size="sm" onClick={() => setEditing(true)}><Pencil /> Edit Targets</Button>}>Daily Target</CardTitle>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-5">
         {TARGETS.map(({ label, min, max, unit, icon: Icon }) => (
-          <div key={label} className="flex min-h-16 items-center gap-3 rounded-xl bg-lavender-faint/60 p-3">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-lavender-soft text-primary"><Icon className="size-4" /></span>
-            <div className="min-w-0"><p className="text-xs font-medium text-muted-foreground">{label}</p><p className="mt-1 whitespace-nowrap text-lg font-semibold tabular-nums">{numberText(values[min])} – {numberText(values[max])} <span className="text-xs font-medium text-muted-foreground">{unit}</span></p></div>
+          <div key={label} className="flex items-center gap-2.5 rounded-xl bg-lavender-faint/60 px-2.5 py-2">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-lavender-soft text-primary"><Icon className="size-3.5" /></span>
+            <div className="min-w-0"><p className="text-xs font-medium text-muted-foreground">{label}</p><p className="mt-0.5 whitespace-nowrap text-base font-semibold tabular-nums">{numberText(values[min])} – {numberText(values[max])} <span className="text-xs font-medium text-muted-foreground">{unit}</span></p></div>
           </div>
         ))}
       </div>
@@ -108,7 +108,7 @@ function MealPlanSection({ meals, foodNames, run }: { meals: MealWithItems[]; fo
   const [editing, setEditing] = useState(false);
   return <>
     <div className="mb-3 flex items-center justify-between gap-3"><h2 className="text-lg font-semibold">Meal Plan</h2><Button variant="soft" size="sm" onClick={() => setEditing(true)}><Pencil /> Edit Meal Plan</Button></div>
-    {meals.length === 0 ? <Card><EmptyState title="No meals in your plan" action={<Button onClick={() => setEditing(true)}><Plus /> Add Meal</Button>} /></Card> : <div className="grid gap-3 lg:grid-cols-3">{meals.map((meal) => <Card key={meal.id} className="min-h-0"><h3 className="text-xs font-semibold uppercase text-primary">{meal.meal_name}</h3><div className="mt-3 space-y-3">{meal.items.length ? meal.items.map((item) => <p key={item.id} className="text-sm leading-6">{formatFoodItem(item)}</p>) : <p className="text-sm text-muted-foreground">No foods added yet.</p>}</div></Card>)}</div>}
+    {meals.length === 0 ? <Card><EmptyState title="No meals in your plan" action={<Button onClick={() => setEditing(true)}><Plus /> Add Meal</Button>} /></Card> : <div className="grid gap-3 lg:grid-cols-3">{meals.map((meal) => <Card key={meal.id} className="min-h-0"><h3 className="text-xs font-semibold uppercase text-primary">{meal.meal_name}</h3><div className="mt-3 space-y-3">{meal.items.length ? meal.items.map((item) => <p key={item.id} className="text-sm leading-5">{formatFoodItem(item)}</p>) : <p className="text-sm text-muted-foreground">No foods added yet.</p>}</div></Card>)}</div>}
     <MealPlanEditor open={editing} onOpenChange={setEditing} meals={meals} foodNames={foodNames} run={run} />
   </>;
 }
