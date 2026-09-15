@@ -58,7 +58,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Mobile top bar */}
       <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border bg-background/90 px-4 py-3 backdrop-blur lg:hidden">
-        <p className="truncate text-sm font-bold">a healthier, happier me</p>
+        <p className="truncate text-sm font-bold">wellness or whatever</p>
         <Button asChild variant="ghost" size="iconSm" aria-label="Settings">
           <Link to="/settings">
             <Settings />
