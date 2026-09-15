@@ -10,7 +10,7 @@ export function Card({
   children: ReactNode;
   as?: "section" | "div" | "article";
 }) {
-  return <As className={cn("card-soft p-4 sm:p-5", className)}>{children}</As>;
+  return <As className={cn("card-soft p-3 sm:p-4", className)}>{children}</As>;
 }
 
 export function CardTitle({
@@ -23,7 +23,7 @@ export function CardTitle({
   className?: string;
 }) {
   return (
-    <div className={cn("mb-3 flex items-center justify-between gap-3", className)}>
+    <div className={cn("mb-2 flex items-center justify-between gap-2", className)}>
       <h2 className="min-w-0 truncate text-base font-semibold sm:text-lg">{children}</h2>
       {action ? <div className="shrink-0">{action}</div> : null}
     </div>
@@ -42,13 +42,13 @@ export function PageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <header className="mb-5 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:items-center sm:justify-between">
-      <div className="flex min-w-0 items-center gap-3">
+    <header className="mb-3 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2 sm:flex sm:items-center sm:justify-between">
+      <div className="flex min-w-0 items-center gap-2">
         {icon ? <span className="shrink-0 text-primary">{icon}</span> : null}
         <div className="min-w-0">
-          <h1 className="truncate text-2xl font-bold sm:text-3xl">{title}</h1>
+          <h1 className="truncate text-xl font-semibold sm:text-2xl">{title}</h1>
           {subtitle ? (
-            <p className="mt-0.5 truncate text-sm text-muted-foreground">{subtitle}</p>
+            <p className="truncate text-[11px] text-muted-foreground">{subtitle}</p>
           ) : null}
         </div>
       </div>
@@ -67,10 +67,10 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-lavender-faint/40 px-5 py-8 text-center">
+    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-lavender-faint/40 px-4 py-6 text-center">
       <p className="text-sm font-semibold text-foreground">{title}</p>
-      {description ? <p className="mt-1 text-sm text-muted-foreground">{description}</p> : null}
-      {action ? <div className="mt-4">{action}</div> : null}
+      {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
+      {action ? <div className="mt-3">{action}</div> : null}
     </div>
   );
 }
@@ -79,7 +79,7 @@ export function Chip({ children, className }: { children: ReactNode; className?:
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full bg-lavender-soft px-2.5 py-1 text-xs font-semibold text-accent-foreground",
+        "inline-flex items-center rounded-full bg-lavender-soft px-2 py-0.5 text-xs font-medium text-accent-foreground",
         className,
       )}
     >
@@ -102,7 +102,7 @@ export function FieldLabel({
   hint?: string;
 }) {
   return (
-    <label htmlFor={htmlFor} className="mb-1 block text-sm font-medium text-foreground">
+    <label htmlFor={htmlFor} className="mb-0.5 block text-xs font-medium text-foreground">
       {children}
       {hint ? <span className="ml-1 font-normal text-muted-foreground">{hint}</span> : null}
     </label>

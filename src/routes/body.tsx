@@ -95,12 +95,12 @@ function BodyPage() {
   return (
     <>
       <PageHeader
-        icon={<Ruler className="size-7" />}
+        icon={<Ruler className="size-5" />}
         title="Body Measurements"
         subtitle="the monthly reality check"
       />
 
-      <div className="space-y-4 lg:space-y-5">
+      <div className="space-y-3 lg:space-y-3.5">
         <Card className="border-primary/30 shadow-lift">
           <MonthNavigation month={selectedMonth} onChange={setSelectedMonth} />
           {measurementsQuery.isLoading ? (
@@ -118,9 +118,9 @@ function BodyPage() {
 
         <Card>
           <CardTitle>Progress</CardTitle>
-          <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mb-3.5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <Select value={metric} onValueChange={(value) => setMetric(value as MetricKey)}>
-              <SelectTrigger className="h-10 w-full rounded-xl bg-card sm:w-44" aria-label="Measurement metric">
+              <SelectTrigger className="h-9 w-full rounded-xl bg-card sm:w-44" aria-label="Measurement metric">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -263,7 +263,7 @@ function ChangeIndicator({ change, unit }: { change: ChangeInfo; unit: string })
 
 function MonthNavigation({ month, onChange }: { month: string; onChange: (month: string) => void }) {
   return (
-    <div className="mb-4 flex items-center justify-between border-b border-border pb-3">
+    <div className="mb-2.5 flex items-center justify-between border-b border-border pb-2">
       <Button variant="ghost" size="iconSm" aria-label="Previous month" onClick={() => onChange(shiftMonth(month, -1))}><ChevronLeft /></Button>
       <p className="text-base font-semibold sm:text-lg">{monthName(month)}</p>
       <Button variant="ghost" size="iconSm" aria-label="Next month" onClick={() => onChange(shiftMonth(month, 1))}><ChevronRight /></Button>
@@ -274,24 +274,24 @@ function MonthNavigation({ month, onChange }: { month: string; onChange: (month:
 function MonthlyCheckIn({ month, entry, entries, onAdd, onEdit }: { month: string; entry: BodyMeasurement | null; entries: BodyMeasurement[]; onAdd: () => void; onEdit: () => void }) {
   if (!entry) {
     return (
-      <div className="flex min-h-44 flex-col items-center justify-center text-center">
+      <div className="flex min-h-0 flex-col items-center justify-center text-center">
         <p className="text-sm font-semibold uppercase text-primary">{monthName(month, false)} check-in</p>
         <p className="mt-3 text-sm text-muted-foreground">No measurements added yet.</p>
-        <Button className="mt-4" onClick={onAdd}><Plus /> Add Measurements</Button>
+        <Button className="mt-3" onClick={onAdd}><Plus /> Add Measurements</Button>
       </div>
     );
   }
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+      <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
         <div><p className="text-sm font-semibold uppercase text-primary">{monthName(month, false)} check-in</p><p className="mt-1 text-xs text-muted-foreground">Measured on <span className="font-medium text-foreground">{formatDate(entry.measurement_date)}</span></p></div>
         <Button variant="soft" size="sm" onClick={onEdit}>Edit Measurements</Button>
       </div>
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid grid-cols-2 gap-2 lg:grid-cols-3 xl:grid-cols-6">
         {METRICS.map((metric) => {
           const value = entry[metric.key];
           const change = getMetricChange(entries, entry, metric);
-          return <div key={metric.key} className="min-h-20 rounded-xl bg-lavender-faint/55 p-3"><p className="text-xs font-medium text-muted-foreground">{metric.label}</p>{value == null ? <p className="mt-2 text-lg font-bold text-muted-foreground">—</p> : <><p className="mt-1 text-lg font-bold tabular-nums">{formatNumber(Number(value))} <span className="text-sm font-medium text-muted-foreground">{metric.unit}</span></p>{change ? <div className="mt-1"><ChangeIndicator change={change} unit={metric.unit} /></div> : null}</>}</div>;
+          return <div key={metric.key} className="min-h-14 rounded-xl bg-lavender-faint/55 px-2.5 py-2"><p className="text-xs font-medium text-muted-foreground">{metric.label}</p>{value == null ? <p className="mt-0.5 text-base font-medium text-muted-foreground">—</p> : <><p className="mt-0.5 text-lg font-semibold tabular-nums">{formatNumber(Number(value))} <span className="text-xs font-medium text-muted-foreground">{metric.unit}</span></p>{change ? <div className="mt-1"><ChangeIndicator change={change} unit={metric.unit} /></div> : null}</>}</div>;
         })}
       </div>
     </div>
@@ -411,7 +411,7 @@ function MeasurementForm({ open, entry, allEntries, selectedMonth, onOpenChange,
   });
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent key={`${entry?.id ?? "new"}-${open}`} className="fixed inset-x-0 bottom-0 left-0 top-auto max-h-[90vh] w-full max-w-none translate-x-0 translate-y-0 overflow-y-auto rounded-t-2xl p-4 sm:left-1/2 sm:top-1/2 sm:bottom-auto sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:p-5" onOpenAutoFocus={() => setForm(initial())}>
+      <DialogContent key={`${entry?.id ?? "new"}-${open}`} className="fixed inset-x-0 bottom-0 left-0 top-auto max-h-[90vh] w-full max-w-none translate-x-0 translate-y-0 overflow-y-auto rounded-t-2xl p-3 sm:left-1/2 sm:top-1/2 sm:bottom-auto sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:p-5" onOpenAutoFocus={() => setForm(initial())}>
         <DialogHeader><DialogTitle>{entry ? "Edit Measurements" : "Add Measurements"}</DialogTitle><DialogDescription>Enter at least one measurement.</DialogDescription></DialogHeader>
         <div className="grid grid-cols-2 gap-3 py-2">
           <div className="col-span-2"><FieldLabel htmlFor="measurement-date">Date measured</FieldLabel><Input id="measurement-date" type="date" min={minimumDate} max={maximumDate} value={form.measurement_date} onChange={(event) => setForm((current) => ({ ...current, measurement_date: event.target.value }))} /><p className="mt-1.5 text-xs text-muted-foreground">Choose a date in {monthName(selectedMonth)}.</p></div>
