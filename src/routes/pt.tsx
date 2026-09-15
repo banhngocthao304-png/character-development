@@ -151,10 +151,10 @@ function PtPage() {
               <Skeleton className="h-24" />
             ) : (
               <>
-                <p className="text-lg font-extrabold sm:text-xl">
+                <p className="text-lg font-bold sm:text-xl">
                   {formatDateShort(period.startISO)} – {formatDateShort(period.endISO)}
                 </p>
-                <p className="mt-2 text-2xl font-extrabold text-primary">
+                <p className="mt-2 text-2xl font-bold text-primary">
                   {periodCount} / {perPeriod}
                   <span className="ml-2 text-sm font-semibold text-muted-foreground">sessions</span>
                 </p>

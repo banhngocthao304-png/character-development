@@ -14,7 +14,7 @@ Out of scope: Meal Log / food logging, calories, macros.
 - [x] PT Tracker page: period summary, infinite calendar, session details panel,
       exercise autocomplete, last-time weight, autosave, remove confirmation
 - [x] Body Measurements: entries, latest per-metric, change vs previous, chart, history
-- [ ] Body Measurements: make one monthly check-in the primary workflow (in progress)
+- [x] Body Measurements: make one monthly check-in the primary workflow
 - [ ] Recipes: CRUD, ingredients, steps, tags, photo upload
 - [ ] Meal Plan: date navigation, recipe snapshot, simple meals, daily note
 - [x] Settings: PT package size + period start day (export CSV still open)

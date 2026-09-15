@@ -18,8 +18,8 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 hidden w-60 flex-col border-r border-border bg-sidebar px-4 py-6 lg:flex">
         <div className="px-2">
-          <p className="text-base font-extrabold leading-tight">a healthier,</p>
-          <p className="text-base font-extrabold leading-tight text-primary">happier me</p>
+          <p className="text-base font-bold leading-tight">a healthier,</p>
+          <p className="text-base font-bold leading-tight text-primary">happier me</p>
         </div>
         <nav className="mt-8 flex flex-1 flex-col gap-1">
           {NAV.map((item) => {
@@ -58,7 +58,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Mobile top bar */}
       <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border bg-background/90 px-4 py-3 backdrop-blur lg:hidden">
-        <p className="truncate text-sm font-extrabold">a healthier, happier me</p>
+        <p className="truncate text-sm font-bold">a healthier, happier me</p>
         <Button asChild variant="ghost" size="iconSm" aria-label="Settings">
           <Link to="/settings">
             <Settings />
