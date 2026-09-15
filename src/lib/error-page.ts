@@ -1,3 +1,4 @@
+// Return a self-contained static HTML page for critical runtime errors.
 export function renderErrorPage(): string {
   return `<!doctype html>
 <html lang="en">
