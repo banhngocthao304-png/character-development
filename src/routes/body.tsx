@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-import { MoreHorizontal, Plus, Ruler } from "lucide-react";
+import { ChevronLeft, ChevronRight, MoreHorizontal, Plus, Ruler } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardTitle, EmptyState, FieldLabel, PageHeader, Skeleton } from "@/components/ui-kit";
 import { Button } from "@/components/ui/button";
@@ -78,6 +78,8 @@ function BodyPage() {
   const [deleteEntry, setDeleteEntry] = useState<BodyMeasurement | null>(null);
   const [metric, setMetric] = useState<MetricKey>("weight_kg");
   const [range, setRange] = useState<RangeKey>("1M");
+  const [selectedMonth, setSelectedMonth] = useState(() => todayISO().slice(0, 7));
+  const monthlyEntry = entries.find((entry) => entry.measurement_date.startsWith(selectedMonth)) ?? null;
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["body-measurements"] });
   const deleteMutation = useMutation({
@@ -99,22 +101,18 @@ function BodyPage() {
       />
 
       <div className="space-y-5 lg:space-y-6">
-        <Card>
-          <CardTitle
-            action={
-              <Button size="sm" onClick={() => setFormEntry("new")}>
-                <Plus /> Add Entry
-              </Button>
-            }
-          >
-            Latest Measurements
-          </CardTitle>
+        <Card className="border-primary/30 shadow-lift">
+          <MonthNavigation month={selectedMonth} onChange={setSelectedMonth} />
           {measurementsQuery.isLoading ? (
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
-              {METRICS.map((item) => <Skeleton key={item.key} className="h-28" />)}
-            </div>
+            <Skeleton className="h-52" />
           ) : (
-            <LatestMeasurements entries={entries} />
+            <MonthlyCheckIn
+              month={selectedMonth}
+              entry={monthlyEntry}
+              entries={entries}
+              onAdd={() => setFormEntry("new")}
+              onEdit={() => monthlyEntry && setFormEntry(monthlyEntry)}
+            />
           )}
         </Card>
 
@@ -164,6 +162,7 @@ function BodyPage() {
         open={formEntry !== null}
         entry={formEntry === "new" ? null : formEntry}
         allEntries={entries}
+        selectedMonth={selectedMonth}
         onOpenChange={(open) => !open && setFormEntry(null)}
         onSaved={() => {
           setFormEntry(null);
@@ -208,33 +207,54 @@ function formatNumber(value: number): string {
   return Number(value).toLocaleString("en-US", { maximumFractionDigits: 2 });
 }
 
-function LatestMeasurements({ entries }: { entries: BodyMeasurement[] }) {
+function monthName(month: string, includeYear = true): string {
+  const [year = "1970", monthNumber = "1"] = month.split("-");
+  const date = new Date(Number(year), Number(monthNumber) - 1, 1);
+  const name = date.toLocaleString("en-US", { month: "long" });
+  return includeYear ? `${name} ${year}` : name;
+}
+
+function shiftMonth(month: string, amount: number): string {
+  const [year = "1970", monthNumber = "1"] = month.split("-");
+  const date = new Date(Number(year), Number(monthNumber) - 1 + amount, 1);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function MonthNavigation({ month, onChange }: { month: string; onChange: (month: string) => void }) {
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
-      {METRICS.map((metric) => {
-        const valid = entries.filter((entry) => entry[metric.key] != null);
-        const latest = valid[0];
-        const previous = valid[1];
-        const value = latest?.[metric.key];
-        const previousValue = previous?.[metric.key];
-        const difference = value != null && previousValue != null ? Number(value) - Number(previousValue) : null;
-        return (
-          <div key={metric.key} className="min-h-28 rounded-xl border border-border bg-lavender-faint/40 p-3.5">
-            <p className="text-xs font-medium text-muted-foreground">{metric.label}</p>
-            {value != null ? (
-              <>
-                <p className="mt-1 text-xl font-bold tabular-nums">{formatNumber(Number(value))} <span className="text-sm font-medium text-muted-foreground">{metric.unit}</span></p>
-                {difference != null && difference !== 0 ? (
-                  <p className="mt-1 text-xs font-medium text-primary">{difference < 0 ? "↓" : "↑"} {formatNumber(Math.abs(difference))} {metric.unit}</p>
-                ) : <div className="h-5" />}
-                <p className="mt-1 text-xs text-muted-foreground">{latest ? formatDateShort(latest.measurement_date) : ""}</p>
-              </>
-            ) : (
-              <p className="mt-3 text-sm text-muted-foreground">Not recorded</p>
-            )}
-          </div>
-        );
-      })}
+    <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
+      <Button variant="ghost" size="iconSm" aria-label="Previous month" onClick={() => onChange(shiftMonth(month, -1))}><ChevronLeft /></Button>
+      <p className="text-base font-semibold sm:text-lg">{monthName(month)}</p>
+      <Button variant="ghost" size="iconSm" aria-label="Next month" onClick={() => onChange(shiftMonth(month, 1))}><ChevronRight /></Button>
+    </div>
+  );
+}
+
+function MonthlyCheckIn({ month, entry, entries, onAdd, onEdit }: { month: string; entry: BodyMeasurement | null; entries: BodyMeasurement[]; onAdd: () => void; onEdit: () => void }) {
+  if (!entry) {
+    return (
+      <div className="flex min-h-52 flex-col items-center justify-center text-center">
+        <p className="text-sm font-semibold uppercase text-primary">{monthName(month, false)} check-in</p>
+        <p className="mt-3 text-sm text-muted-foreground">No measurements added yet.</p>
+        <Button className="mt-5" onClick={onAdd}><Plus /> Add Measurements</Button>
+      </div>
+    );
+  }
+  return (
+    <div>
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+        <div><p className="text-sm font-semibold uppercase text-primary">{monthName(month, false)} check-in</p><p className="mt-1 text-xs text-muted-foreground">Measured on <span className="font-medium text-foreground">{formatDate(entry.measurement_date)}</span></p></div>
+        <Button variant="soft" size="sm" onClick={onEdit}>Edit Measurements</Button>
+      </div>
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
+        {METRICS.map((metric) => {
+          const value = entry[metric.key];
+          const previous = entries.find((item) => item.measurement_date.slice(0, 7) < month && item[metric.key] != null);
+          const previousValue = previous?.[metric.key];
+          const difference = value != null && previousValue != null ? Number(value) - Number(previousValue) : null;
+          return <div key={metric.key} className="min-h-24 rounded-xl bg-lavender-faint/55 p-3.5"><p className="text-xs font-medium text-muted-foreground">{metric.label}</p>{value == null ? <p className="mt-3 text-sm text-muted-foreground">Not recorded</p> : <><p className="mt-1 text-xl font-bold tabular-nums">{formatNumber(Number(value))} <span className="text-sm font-medium text-muted-foreground">{metric.unit}</span></p>{difference != null && difference !== 0 ? <p className="mt-1 text-xs font-medium text-primary">{difference < 0 ? "↓" : "↑"} {formatNumber(Math.abs(difference))} {metric.unit} from {previous ? monthName(previous.measurement_date.slice(0, 7), false) : "previous"}</p> : null}</>}</div>;
+        })}
+      </div>
     </div>
   );
 }
@@ -249,8 +269,14 @@ function ProgressGraph({ entries, metric, range, onAdd }: { entries: BodyMeasure
       date.setMonth(date.getMonth() - months[range]);
       cutoff = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
     }
+    const seenMonths = new Set<string>();
     return entries
-      .filter((entry) => entry[metric] != null && (!cutoff || entry.measurement_date >= cutoff))
+      .filter((entry) => {
+        const month = entry.measurement_date.slice(0, 7);
+        if (entry[metric] == null || (cutoff && entry.measurement_date < cutoff) || seenMonths.has(month)) return false;
+        seenMonths.add(month);
+        return true;
+      })
       .map((entry) => ({ date: entry.measurement_date, label: formatDateShort(entry.measurement_date), value: Number(entry[metric]) }))
       .reverse();
   }, [entries, metric, range]);
@@ -312,8 +338,14 @@ function MeasurementHistory({ entries, onEdit, onDelete }: { entries: BodyMeasur
 }
 
 type FormState = Record<MetricKey, string> & { measurement_date: string };
-function MeasurementForm({ open, entry, allEntries, onOpenChange, onSaved }: { open: boolean; entry: BodyMeasurement | null; allEntries: BodyMeasurement[]; onOpenChange: (open: boolean) => void; onSaved: () => void }) {
-  const initial = (): FormState => ({ measurement_date: entry?.measurement_date ?? todayISO(), weight_kg: entry?.weight_kg?.toString() ?? "", waist_cm: entry?.waist_cm?.toString() ?? "", hip_cm: entry?.hip_cm?.toString() ?? "", bust_cm: entry?.bust_cm?.toString() ?? "", thigh_cm: entry?.thigh_cm?.toString() ?? "", arm_cm: entry?.arm_cm?.toString() ?? "" });
+function MeasurementForm({ open, entry, allEntries, selectedMonth, onOpenChange, onSaved }: { open: boolean; entry: BodyMeasurement | null; allEntries: BodyMeasurement[]; selectedMonth: string; onOpenChange: (open: boolean) => void; onSaved: () => void }) {
+  const currentMonth = todayISO().slice(0, 7);
+  const defaultDate = selectedMonth === currentMonth ? todayISO() : `${selectedMonth}-01`;
+  const [year = "1970", monthNumber = "1"] = selectedMonth.split("-");
+  const finalDay = new Date(Number(year), Number(monthNumber), 0).getDate();
+  const minimumDate = `${selectedMonth}-01`;
+  const maximumDate = `${selectedMonth}-${String(finalDay).padStart(2, "0")}`;
+  const initial = (): FormState => ({ measurement_date: entry?.measurement_date ?? defaultDate, weight_kg: entry?.weight_kg?.toString() ?? "", waist_cm: entry?.waist_cm?.toString() ?? "", hip_cm: entry?.hip_cm?.toString() ?? "", bust_cm: entry?.bust_cm?.toString() ?? "", thigh_cm: entry?.thigh_cm?.toString() ?? "", arm_cm: entry?.arm_cm?.toString() ?? "" });
   const [form, setForm] = useState<FormState>(initial);
   const existing = allEntries.find((item) => item.measurement_date === form.measurement_date && item.id !== entry?.id) ?? null;
   const hasValue = METRICS.some((item) => form[item.key] !== "");
@@ -333,11 +365,11 @@ function MeasurementForm({ open, entry, allEntries, onOpenChange, onSaved }: { o
       <DialogContent key={`${entry?.id ?? "new"}-${open}`} className="fixed inset-x-0 bottom-0 left-0 top-auto max-h-[90vh] w-full max-w-none translate-x-0 translate-y-0 overflow-y-auto rounded-t-2xl p-5 sm:left-1/2 sm:top-1/2 sm:bottom-auto sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:p-6" onOpenAutoFocus={() => setForm(initial())}>
         <DialogHeader><DialogTitle>{entry ? "Edit Measurements" : "Add Measurements"}</DialogTitle><DialogDescription>Enter at least one measurement.</DialogDescription></DialogHeader>
         <div className="grid grid-cols-2 gap-4 py-2">
-          <div className="col-span-2"><FieldLabel htmlFor="measurement-date">Date</FieldLabel><Input id="measurement-date" type="date" value={form.measurement_date} onChange={(event) => setForm((current) => ({ ...current, measurement_date: event.target.value }))} /></div>
+          <div className="col-span-2"><FieldLabel htmlFor="measurement-date">Date measured</FieldLabel><Input id="measurement-date" type="date" min={minimumDate} max={maximumDate} value={form.measurement_date} onChange={(event) => setForm((current) => ({ ...current, measurement_date: event.target.value }))} /><p className="mt-1.5 text-xs text-muted-foreground">Choose a date in {monthName(selectedMonth)}.</p></div>
           {METRICS.map((item) => <div key={item.key}><FieldLabel htmlFor={item.key}>{item.label}</FieldLabel><div className="relative"><Input id={item.key} type="number" inputMode="decimal" min="0" step="0.1" className="pr-10" value={form[item.key]} onChange={(event) => setForm((current) => ({ ...current, [item.key]: event.target.value }))} /><span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{item.unit}</span></div></div>)}
         </div>
         {existing ? <p role="status" className="rounded-xl bg-lavender-faint px-3 py-2 text-sm font-medium text-accent-foreground">Measurements already exist for this date.</p> : null}
-        <DialogFooter className="gap-2"><Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button><Button type="button" disabled={!form.measurement_date || !hasValue || mutation.isPending} onClick={() => mutation.mutate()}>{mutation.isPending ? "Saving…" : existing ? "Update Existing Entry" : entry ? "Update Measurements" : "Save Measurements"}</Button></DialogFooter>
+        <DialogFooter className="gap-2"><Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button><Button type="button" disabled={!form.measurement_date || !form.measurement_date.startsWith(selectedMonth) || !hasValue || mutation.isPending} onClick={() => mutation.mutate()}>{mutation.isPending ? "Saving…" : existing ? "Update Existing Entry" : entry ? "Update Measurements" : "Save Measurements"}</Button></DialogFooter>
       </DialogContent>
     </Dialog>
   );
