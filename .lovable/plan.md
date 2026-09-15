@@ -1,21 +1,19 @@
-# Refine Food Options interface
+# Lean typography and spacing refinement
 
-## What will change
-- Make Food Options read-only by default, with compact food rows and no persistent management icons.
-- Add collapsible category headers with smooth, restrained open/close behavior.
-- Add one `Edit` / `Done` control per category; only that category shows reorder, rename, delete, and option-management controls while editing.
-- Keep `Add Option` available in every expanded category, including normal viewing mode.
-- Add a compact, case-insensitive search across all food options, showing each match with its category.
-- Reduce the visual prominence of `Add Category` and place it after the category list.
-- Rename the Training navigation label on both mobile and desktop.
+## Goal
+Make the full personal health diary noticeably lighter and denser while preserving Lexend, colors, layouts, navigation, data, and all behavior.
+
+## Changes
+- Tighten the global mobile-first type scale to the requested 10–24px hierarchy, with modest desktop increases.
+- Replace remaining bold-heavy headings and values with regular, medium, or semibold weights.
+- Compact shared cards, page headers, buttons, inputs, tabs, dialogs, sheets, and navigation while preserving usable touch targets.
+- Tune Training, Body Measurements, Meals, charts, history, and Settings where local sizing or spacing overrides remain oversized.
+- Keep the global brand visually quieter than each page title.
+
+## Verification
+- Check Training, Body Measurements, Meals, and Settings at 393px mobile and desktop widths.
+- Confirm typography remains Lexend, content does not overlap, controls remain tappable, and browser errors are absent.
 
 ## Technical details
-- Preserve the current Food Options queries, mutations, ordering behavior, and database structure.
-- Keep category expansion and edit state local to the Meals interface.
-- Reuse existing buttons, dialogs, confirmation flows, semantic colors, and Lexend typography.
-- Leave Daily Target, Meal Plan, Body Measurements, and Training behavior unchanged.
-
-## Validation
-- Check normal, expanded, collapsed, editing, search, add, rename, delete, and reorder states.
-- Verify the 393px mobile layout has no always-visible icon rows and that desktop remains compact.
-- Confirm existing food data persists unchanged and navigation reads `Training` in both layouts.
+- Update Tailwind v4 theme tokens in `src/styles.css` and existing component utility classes only.
+- Do not change persistence, application logic, content, colors, or navigation structure.
