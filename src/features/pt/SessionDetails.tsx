@@ -34,7 +34,11 @@ function useAutosaveState() {
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => setState("idle"), 1800);
   }
-  useEffect(() => () => timer.current && clearTimeout(timer.current), []);
+  useEffect(() => {
+    return () => {
+      if (timer.current) clearTimeout(timer.current);
+    };
+  }, []);
   return { state, saving, saved };
 }
 
