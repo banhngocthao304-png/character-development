@@ -16,7 +16,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 hidden w-56 flex-col border-r border-border bg-sidebar px-3 py-4 lg:flex">
+      <aside className="fixed inset-y-0 left-0 hidden w-[17rem] flex-col border-r border-border bg-sidebar px-5 py-4 lg:flex">
         <div className="px-2">
           <p className="text-sm font-semibold leading-tight text-brand">Character Development</p>
         </div>
@@ -67,7 +67,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </Button>
       </header>
 
-      <main className="lg:pl-56">
+      <main className="lg:pl-[17rem]">
         <div className="mx-auto w-full max-w-[1400px] px-3.5 pb-24 pt-3.5 sm:px-5 lg:px-8 lg:pb-8 lg:pt-5">
           {children}
         </div>
