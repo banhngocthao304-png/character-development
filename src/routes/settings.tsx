@@ -12,7 +12,6 @@ import { currentUserId, fetchPtSettings } from "@/features/pt/api";
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — a healthier, happier me" },
       {
         name: "description",
         content: "Set your PT package size and period start day, and manage your account.",

@@ -82,23 +82,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "viewport",
         content: "width=device-width, initial-scale=1, viewport-fit=cover",
       },
-      { title: "a healthier, happier me — personal health diary" },
+      { title: "Character Development" },
       {
         name: "description",
         content:
-          "A calm private diary for workouts, body measurements, nutrition targets and meal plans.",
+          "A personal diary for training, body measurements, and daily meal planning.",
       },
-      { property: "og:title", content: "a healthier, happier me" },
+      { property: "og:title", content: "Character Development" },
       {
         property: "og:description",
-        content: "A calm private diary for PT sessions, body measurements and meal plans.",
+        content: "A personal diary for training, body measurements, and daily meal planning.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
