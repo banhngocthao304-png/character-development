@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Ruler } from "lucide-react";
 import { Card, EmptyState, PageHeader } from "@/components/ui-kit";
 
-export const Route = createFileRoute("/_authenticated/body")({
+export const Route = createFileRoute("/body")({
   head: () => ({
     meta: [
       { title: "Body Measurements — a healthier, happier me" },

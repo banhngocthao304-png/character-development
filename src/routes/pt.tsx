@@ -27,7 +27,7 @@ import {
 import { currentPeriod, DEFAULT_PERIOD_START_DAY, DEFAULT_SESSIONS_PER_PERIOD } from "@/lib/pt";
 import { daysLeft, formatDateShort, parseISODate, todayISO } from "@/lib/dates";
 
-export const Route = createFileRoute("/_authenticated/pt")({
+export const Route = createFileRoute("/pt")({
   head: () => ({
     meta: [
       { title: "PT Tracker — a healthier, happier me" },

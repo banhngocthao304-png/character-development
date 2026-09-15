@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { UtensilsCrossed } from "lucide-react";
 import { Card, EmptyState, PageHeader } from "@/components/ui-kit";
 
-export const Route = createFileRoute("/_authenticated/meals")({
+export const Route = createFileRoute("/meals")({
   head: () => ({
     meta: [
       { title: "Meals — a healthier, happier me" },
