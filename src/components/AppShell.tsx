@@ -57,8 +57,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border bg-background/90 px-4 py-2 backdrop-blur lg:hidden">
-        <p className="truncate text-xs font-medium text-muted-foreground">character development </p>
+      <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border bg-background/90 px-4 py-1.5 backdrop-blur lg:hidden">
+        <p className="truncate text-[18px] font-semibold leading-none tracking-tight text-secondary-foreground sm:text-[20px]">
+          character development&nbsp;
+        </p>
         <Button asChild variant="ghost" size="iconSm" aria-label="Settings">
           <Link to="/settings">
             <Settings />
