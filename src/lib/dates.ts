@@ -13,6 +13,7 @@ export function parseISODate(value: string): Date {
   return new Date(parts[0] ?? 1970, (parts[1] ?? 1) - 1, parts[2] ?? 1);
 }
 
+// Current local date in YYYY-MM-DD form.
 export function todayISO(): string {
   return toISODate(new Date());
 }
