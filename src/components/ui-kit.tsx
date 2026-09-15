@@ -24,7 +24,7 @@ export function CardTitle({
 }) {
   return (
     <div className={cn("mb-4 flex items-center justify-between gap-3", className)}>
-      <h2 className="min-w-0 truncate text-base font-bold sm:text-lg">{children}</h2>
+      <h2 className="min-w-0 truncate text-base font-semibold sm:text-lg">{children}</h2>
       {action ? <div className="shrink-0">{action}</div> : null}
     </div>
   );
@@ -46,7 +46,7 @@ export function PageHeader({
       <div className="flex min-w-0 items-center gap-3">
         {icon ? <span className="shrink-0 text-primary">{icon}</span> : null}
         <div className="min-w-0">
-          <h1 className="truncate text-2xl font-extrabold sm:text-3xl">{title}</h1>
+          <h1 className="truncate text-2xl font-bold sm:text-3xl">{title}</h1>
           {subtitle ? (
             <p className="mt-0.5 truncate text-sm text-muted-foreground">{subtitle}</p>
           ) : null}
@@ -102,7 +102,7 @@ export function FieldLabel({
   hint?: string;
 }) {
   return (
-    <label htmlFor={htmlFor} className="mb-1.5 block text-sm font-semibold text-foreground">
+    <label htmlFor={htmlFor} className="mb-1.5 block text-sm font-medium text-foreground">
       {children}
       {hint ? <span className="ml-1 font-normal text-muted-foreground">{hint}</span> : null}
     </label>

@@ -11,7 +11,7 @@
  */
 
 @theme inline {
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Lexend", sans-serif;
 
   --radius-sm: calc(var(--radius) - 6px);
   --radius-md: calc(var(--radius) - 4px);
@@ -129,6 +129,16 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  button,
+  input,
+  select,
+  textarea,
+  [role="dialog"],
+  [role="menu"],
+  .recharts-wrapper {
+    font-family: var(--font-sans);
+  }
+
   /* Prevent iOS zoom on focus */
   input,
   select,
@@ -139,7 +149,7 @@
   h1,
   h2,
   h3 {
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
   }
 }
 
