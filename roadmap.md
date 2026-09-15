@@ -19,3 +19,4 @@ Out of scope: Meal Log / food logging, calories, macros.
 - [x] Settings: PT package size + period start day (export CSV still open)
 - [ ] Settings: export data (CSV)
 - [ ] Responsive + empty/loading/error states pass
+- [ ] Verify Body Measurements persistence flow and responsive layouts
