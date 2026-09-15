@@ -9,8 +9,8 @@ export function toISODate(date: Date): string {
 
 /** Parse a YYYY-MM-DD string as a LOCAL date (no UTC shift). */
 export function parseISODate(value: string): Date {
-  const [y, m, d] = value.split("-").map(Number);
-  return new Date(y, (m ?? 1) - 1, d ?? 1);
+  const parts = value.split("-").map(Number);
+  return new Date(parts[0] ?? 1970, (parts[1] ?? 1) - 1, parts[2] ?? 1);
 }
 
 export function todayISO(): string {
