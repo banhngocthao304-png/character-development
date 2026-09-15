@@ -143,18 +143,18 @@ function PtPage() {
         subtitle="Show up for yourself"
       />
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-6">
-        <div className="space-y-5">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-5">
+        <div className="space-y-4">
           <Card>
             <CardTitle>Current period</CardTitle>
             {settingsQuery.isLoading || sessionsQuery.isLoading ? (
               <Skeleton className="h-24" />
             ) : (
               <>
-                <p className="text-lg font-bold sm:text-xl">
+                <p className="text-base font-bold sm:text-lg">
                   {formatDateShort(period.startISO)} – {formatDateShort(period.endISO)}
                 </p>
-                <p className="mt-2 text-2xl font-bold text-primary">
+                <p className="mt-2 text-xl font-bold text-primary">
                   {periodCount} / {perPeriod}
                   <span className="ml-2 text-sm font-semibold text-muted-foreground">sessions</span>
                 </p>

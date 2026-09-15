@@ -18,6 +18,8 @@ Out of scope: Meal Log / actual food tracking, consumed calories/macros, recipes
 - [x] Meals: persistent daily target ranges
 - [x] Meals: reusable meal plan with structured, reorderable foods
 - [x] Meals: editable food-option categories and autocomplete
+- [x] Meals: clean collapsible Food Options view with search and per-category edit mode
+- [x] Global compact typography and spacing refinement across mobile and desktop
 - [x] Settings: PT package size + period start day (export CSV still open)
 - [ ] Settings: export data (CSV)
 - [ ] Responsive + empty/loading/error states pass

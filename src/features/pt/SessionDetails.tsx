@@ -372,7 +372,7 @@ function ExerciseRow({
             aria-label="Weight unit"
             value={unit}
             onChange={(e) => setUnit(e.target.value)}
-            className="h-11 rounded-xl border border-input bg-card px-2 text-sm font-semibold"
+            className="h-10 rounded-xl border border-input bg-card px-2 text-sm font-semibold"
           >
             <option value="kg">kg</option>
             <option value="lb">lb</option>

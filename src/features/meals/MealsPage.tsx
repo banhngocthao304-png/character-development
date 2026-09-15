@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowDown, ArrowUp, Droplets, Flame, MoreHorizontal, Pencil, Plus, Salad, Trash2, UtensilsCrossed, Wheat } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown, ChevronUp, Droplets, Flame, Pencil, Plus, Salad, Search, Trash2, UtensilsCrossed, Wheat } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardTitle, EmptyState, FieldLabel, PageHeader, Skeleton } from "@/components/ui-kit";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import {
   addCategory, addFoodOption, addMeal, addMealItem, deleteCategory, deleteFoodOption,
   deleteMeal, deleteMealItem, fetchMealsData, renameCategory, renameFoodOption, renameMeal,
@@ -38,8 +37,8 @@ export function MealsPage() {
   return (
     <>
       <PageHeader icon={<UtensilsCrossed className="size-7" />} title="Meals" subtitle="Eat well, feel good" />
-      <Tabs defaultValue="target" className="space-y-5">
-        <TabsList className="grid h-11 w-full grid-cols-3 rounded-xl bg-lavender-faint p-1 sm:max-w-xl">
+      <Tabs defaultValue="target" className="space-y-4">
+        <TabsList className="grid h-10 w-full grid-cols-3 rounded-xl bg-lavender-faint p-1 sm:max-w-xl">
           <TabsTrigger value="target" className="h-9 px-1 text-[11px] sm:text-sm">Daily Target</TabsTrigger>
           <TabsTrigger value="plan" className="h-9 px-1 text-[11px] sm:text-sm">Meal Plan</TabsTrigger>
           <TabsTrigger value="options" className="h-9 px-1 text-[11px] sm:text-sm">Food Options</TabsTrigger>
@@ -76,7 +75,7 @@ function DailyTargetSection({ target, run }: { target: NutritionTarget | null; r
       <CardTitle action={<Button variant="soft" size="sm" onClick={() => setEditing(true)}><Pencil /> Edit Targets</Button>}>Daily Target</CardTitle>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
         {TARGETS.map(({ label, min, max, unit, icon: Icon }) => (
-          <div key={label} className="flex min-h-24 items-center gap-3 rounded-xl bg-lavender-faint/60 p-4">
+          <div key={label} className="flex min-h-20 items-center gap-3 rounded-xl bg-lavender-faint/60 p-3">
             <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-lavender-soft text-primary"><Icon className="size-4" /></span>
             <div className="min-w-0"><p className="text-xs font-medium text-muted-foreground">{label}</p><p className="mt-1 whitespace-nowrap text-lg font-bold tabular-nums">{numberText(values[min])} – {numberText(values[max])} <span className="text-xs font-medium text-muted-foreground">{unit}</span></p></div>
           </div>
@@ -145,10 +144,42 @@ function FoodItemDialog({ editor, foodNames, onClose, onSave }: { editor: { meal
 function FoodOptionsSection({ categories, run }: { categories: CategoryWithOptions[]; run: Runner }) {
   const [editor, setEditor] = useState<NameEditor | null>(null);
   const [deleteState, setDeleteState] = useState<DeleteState>(null);
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set(categories[0] ? [categories[0].id] : []));
+  const [search, setSearch] = useState("");
   const moveCategory = (index: number, offset: number) => { const current = categories[index]; const other = categories[index + offset]; if (current && other) void run(() => reorderCategories(current, other), "Category order updated"); };
+  const toggleExpanded = (id: string) => setExpandedIds((current) => { const next = new Set(current); if (next.has(id)) next.delete(id); else next.add(id); return next; });
+  const normalizedSearch = search.trim().toLocaleLowerCase();
+  const matches = normalizedSearch
+    ? categories.flatMap((category) => category.options.filter((option) => option.name.toLocaleLowerCase().includes(normalizedSearch)).map((option) => ({ option, category })))
+    : [];
   return <>
-    <div className="mb-4 flex items-center justify-between gap-3"><h2 className="text-lg font-semibold">Food Options</h2><Button variant="soft" size="sm" onClick={() => setEditor({ type: "category", value: "", sortOrder: categories.length })}><Plus /> Add Category</Button></div>
-    {categories.length === 0 ? <Card><EmptyState title="No food categories yet" /></Card> : <div className="grid gap-4 lg:grid-cols-2">{categories.map((category, index) => <Card key={category.id}><div className="flex items-center gap-2"><h3 className="min-w-0 flex-1 truncate text-base font-semibold">{category.name}</h3><OrderButtons index={index} total={categories.length} onMove={moveCategory} label="category" /><DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost" size="iconSm" aria-label={`Manage ${category.name}`}><MoreHorizontal /></Button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuItem onClick={() => setEditor({ type: "category", id: category.id, value: category.name, sortOrder: category.sort_order })}>Rename category</DropdownMenuItem><DropdownMenuItem onClick={() => setDeleteState({ kind: "category", id: category.id, name: category.name })}>Delete category</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div><div className="mt-4 divide-y divide-border">{category.options.map((option, optionIndex) => <div key={option.id} className="flex min-h-10 items-center gap-2 py-1.5"><span className="min-w-0 flex-1 text-sm">{option.name}</span><OrderButtons index={optionIndex} total={category.options.length} label="option" onMove={(i, o) => { const current = category.options[i]; const other = category.options[i + o]; if (current && other) void run(() => reorderFoodOptions(current, other), "Option order updated"); }} /><Button variant="ghost" size="iconSm" aria-label={`Rename ${option.name}`} onClick={() => setEditor({ type: "option", id: option.id, parentId: category.id, value: option.name, sortOrder: option.sort_order })}><Pencil /></Button><Button variant="ghost" size="iconSm" aria-label={`Delete ${option.name}`} onClick={() => void run(() => deleteFoodOption(option.id), "Option removed")}><Trash2 /></Button></div>)}</div><Button className="mt-3" variant="ghost" size="sm" onClick={() => setEditor({ type: "option", parentId: category.id, value: "", sortOrder: category.options.length })}><Plus /> Add Option</Button></Card>)}</div>}
+    <div className="mb-3"><h2 className="text-lg font-semibold">Food Options</h2></div>
+    <div className="relative mb-4 max-w-xl"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input value={search} onChange={(event) => setSearch(event.target.value)} className="pl-9" placeholder="Search food options..." aria-label="Search food options" /></div>
+    {normalizedSearch ? (
+      <Card className="p-2 sm:p-2">
+        {matches.length ? <div className="divide-y divide-border">{matches.map(({ option, category }) => <div key={option.id} className="flex min-h-9 items-center justify-between gap-3 px-3 py-2 text-sm"><span>{option.name}</span><span className="text-xs text-muted-foreground">{category.name}</span></div>)}</div> : <EmptyState title="No matching food options" />}
+      </Card>
+    ) : categories.length === 0 ? <Card><EmptyState title="No food categories yet" /></Card> : (
+      <div className="space-y-2.5">{categories.map((category, index) => {
+        const expanded = expandedIds.has(category.id);
+        const editing = editingCategoryId === category.id;
+        return <Card key={category.id} className="overflow-hidden p-0 sm:p-0">
+          <div className="flex min-h-12 items-center gap-1 px-3 sm:px-4">
+            <Button type="button" variant="ghost" className="h-10 min-w-0 flex-1 justify-start px-1 text-left text-base font-semibold" aria-expanded={expanded} onClick={() => toggleExpanded(category.id)}>
+              <span className="min-w-0 flex-1 truncate">{category.name}</span>{expanded ? <ChevronUp /> : <ChevronDown />}
+            </Button>
+            <Button type="button" variant="ghost" size="sm" className="text-primary" onClick={() => { setEditingCategoryId(editing ? null : category.id); if (!expanded) setExpandedIds((current) => new Set(current).add(category.id)); }}>{editing ? "Done" : "Edit"}</Button>
+          </div>
+          {expanded ? <div className="border-t border-border px-3 pb-3 sm:px-4">
+            {editing ? <div className="flex items-center justify-end gap-1 border-b border-border py-1.5"><OrderButtons index={index} total={categories.length} onMove={moveCategory} label="category" /><Button variant="ghost" size="sm" onClick={() => setEditor({ type: "category", id: category.id, value: category.name, sortOrder: category.sort_order })}><Pencil /> Rename</Button><Button variant="ghost" size="sm" className="text-destructive" onClick={() => setDeleteState({ kind: "category", id: category.id, name: category.name })}><Trash2 /> Delete</Button></div> : null}
+            <div className="divide-y divide-border">{category.options.map((option, optionIndex) => <div key={option.id} className="flex min-h-9 items-center gap-1 py-1.5"><span className="min-w-0 flex-1 px-1 text-sm">{option.name}</span>{editing ? <><OrderButtons index={optionIndex} total={category.options.length} label="option" onMove={(i, o) => { const current = category.options[i]; const other = category.options[i + o]; if (current && other) void run(() => reorderFoodOptions(current, other), "Option order updated"); }} /><Button variant="ghost" size="iconSm" aria-label={`Rename ${option.name}`} onClick={() => setEditor({ type: "option", id: option.id, parentId: category.id, value: option.name, sortOrder: option.sort_order })}><Pencil /></Button><Button variant="ghost" size="iconSm" className="text-destructive" aria-label={`Delete ${option.name}`} onClick={() => void run(() => deleteFoodOption(option.id), "Option removed")}><Trash2 /></Button></> : null}</div>)}</div>
+            <Button className="mt-2" variant="ghost" size="sm" onClick={() => setEditor({ type: "option", parentId: category.id, value: "", sortOrder: category.options.length })}><Plus /> Add Option</Button>
+          </div> : null}
+        </Card>;
+      })}</div>
+    )}
+    {!normalizedSearch ? <Button className="mt-3" variant="ghost" size="sm" onClick={() => setEditor({ type: "category", value: "", sortOrder: categories.length })}><Plus /> Add Category</Button> : null}
     <NameDialog editor={editor} onClose={() => setEditor(null)} title={editor?.type === "category" ? (editor.id ? "Rename Category" : "Add Category") : (editor?.id ? "Rename Option" : "Add Option")} label={editor?.type === "category" ? "Category name" : "Food name"} onSave={async (e) => { if (e.type === "category") { if (e.id) await run(() => renameCategory(e.id as string, e.value), "Category renamed"); else await run(() => addCategory(e.value, e.sortOrder), "Category added"); } else { if (e.id) await run(() => renameFoodOption(e.id as string, e.value), "Option renamed"); else await run(() => addFoodOption(e.parentId ?? "", e.value, e.sortOrder), "Option added"); } }} />
     <ConfirmDelete state={deleteState} onClose={() => setDeleteState(null)} onConfirm={async (state) => { await run(() => deleteCategory(state.id), "Category removed"); }} />
   </>;

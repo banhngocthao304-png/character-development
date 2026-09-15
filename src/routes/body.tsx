@@ -100,7 +100,7 @@ function BodyPage() {
         subtitle="Progress, not perfection"
       />
 
-      <div className="space-y-5 lg:space-y-6">
+      <div className="space-y-4 lg:space-y-5">
         <Card className="border-primary/30 shadow-lift">
           <MonthNavigation month={selectedMonth} onChange={setSelectedMonth} />
           {measurementsQuery.isLoading ? (
@@ -263,7 +263,7 @@ function ChangeIndicator({ change, unit }: { change: ChangeInfo; unit: string })
 
 function MonthNavigation({ month, onChange }: { month: string; onChange: (month: string) => void }) {
   return (
-    <div className="mb-5 flex items-center justify-between border-b border-border pb-4">
+    <div className="mb-4 flex items-center justify-between border-b border-border pb-3">
       <Button variant="ghost" size="iconSm" aria-label="Previous month" onClick={() => onChange(shiftMonth(month, -1))}><ChevronLeft /></Button>
       <p className="text-base font-semibold sm:text-lg">{monthName(month)}</p>
       <Button variant="ghost" size="iconSm" aria-label="Next month" onClick={() => onChange(shiftMonth(month, 1))}><ChevronRight /></Button>
@@ -274,16 +274,16 @@ function MonthNavigation({ month, onChange }: { month: string; onChange: (month:
 function MonthlyCheckIn({ month, entry, entries, onAdd, onEdit }: { month: string; entry: BodyMeasurement | null; entries: BodyMeasurement[]; onAdd: () => void; onEdit: () => void }) {
   if (!entry) {
     return (
-      <div className="flex min-h-52 flex-col items-center justify-center text-center">
+      <div className="flex min-h-44 flex-col items-center justify-center text-center">
         <p className="text-sm font-semibold uppercase text-primary">{monthName(month, false)} check-in</p>
         <p className="mt-3 text-sm text-muted-foreground">No measurements added yet.</p>
-        <Button className="mt-5" onClick={onAdd}><Plus /> Add Measurements</Button>
+        <Button className="mt-4" onClick={onAdd}><Plus /> Add Measurements</Button>
       </div>
     );
   }
   return (
     <div>
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div><p className="text-sm font-semibold uppercase text-primary">{monthName(month, false)} check-in</p><p className="mt-1 text-xs text-muted-foreground">Measured on <span className="font-medium text-foreground">{formatDate(entry.measurement_date)}</span></p></div>
         <Button variant="soft" size="sm" onClick={onEdit}>Edit Measurements</Button>
       </div>
@@ -291,7 +291,7 @@ function MonthlyCheckIn({ month, entry, entries, onAdd, onEdit }: { month: strin
         {METRICS.map((metric) => {
           const value = entry[metric.key];
           const change = getMetricChange(entries, entry, metric);
-          return <div key={metric.key} className="min-h-24 rounded-xl bg-lavender-faint/55 p-3.5"><p className="text-xs font-medium text-muted-foreground">{metric.label}</p>{value == null ? <p className="mt-2 text-xl font-bold text-muted-foreground">—</p> : <><p className="mt-1 text-xl font-bold tabular-nums">{formatNumber(Number(value))} <span className="text-sm font-medium text-muted-foreground">{metric.unit}</span></p>{change ? <div className="mt-1"><ChangeIndicator change={change} unit={metric.unit} /></div> : null}</>}</div>;
+          return <div key={metric.key} className="min-h-20 rounded-xl bg-lavender-faint/55 p-3"><p className="text-xs font-medium text-muted-foreground">{metric.label}</p>{value == null ? <p className="mt-2 text-lg font-bold text-muted-foreground">—</p> : <><p className="mt-1 text-lg font-bold tabular-nums">{formatNumber(Number(value))} <span className="text-sm font-medium text-muted-foreground">{metric.unit}</span></p>{change ? <div className="mt-1"><ChangeIndicator change={change} unit={metric.unit} /></div> : null}</>}</div>;
         })}
       </div>
     </div>
@@ -331,7 +331,7 @@ function ProgressGraph({ entries, metric, range, onAdd }: { entries: BodyMeasure
 
   return (
     <div>
-      <ChartContainer config={{ value: { label: config.label, color: "var(--color-primary)" } }} className="h-64 w-full aspect-auto sm:h-72">
+      <ChartContainer config={{ value: { label: config.label, color: "var(--color-primary)" } }} className="h-56 w-full aspect-auto sm:h-64">
         <LineChart data={points} margin={{ top: 12, right: 12, bottom: 0, left: -18 }} accessibilityLayer>
           <CartesianGrid vertical={false} stroke="var(--color-border)" strokeOpacity={0.7} />
           <XAxis dataKey="label" tickLine={false} axisLine={false} minTickGap={28} />
@@ -363,7 +363,7 @@ function MeasurementHistory({ entries, onEdit, onDelete }: { entries: BodyMeasur
     <>
       <div className="space-y-3 md:hidden">
         {entries.map((entry) => (
-          <article key={entry.id} className="rounded-xl border border-border p-4">
+          <article key={entry.id} className="rounded-xl border border-border p-3.5">
             <div className="flex items-center justify-between"><h3 className="text-sm font-semibold">{formatDate(entry.measurement_date)}</h3>{menu(entry)}</div>
             <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2">
                {METRICS.filter((item) => entry[item.key] != null).map((item) => { const change = getMetricChange(entries, entry, item); return <div key={item.key} className="flex justify-between gap-3 text-sm"><span className="text-muted-foreground">{item.label}</span><span className="text-right"><span className="font-medium tabular-nums">{formatNumber(Number(entry[item.key]))} {item.unit}</span>{change ? <ChangeIndicator change={change} unit={item.unit} /> : null}</span></div>; })}
@@ -411,9 +411,9 @@ function MeasurementForm({ open, entry, allEntries, selectedMonth, onOpenChange,
   });
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent key={`${entry?.id ?? "new"}-${open}`} className="fixed inset-x-0 bottom-0 left-0 top-auto max-h-[90vh] w-full max-w-none translate-x-0 translate-y-0 overflow-y-auto rounded-t-2xl p-5 sm:left-1/2 sm:top-1/2 sm:bottom-auto sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:p-6" onOpenAutoFocus={() => setForm(initial())}>
+      <DialogContent key={`${entry?.id ?? "new"}-${open}`} className="fixed inset-x-0 bottom-0 left-0 top-auto max-h-[90vh] w-full max-w-none translate-x-0 translate-y-0 overflow-y-auto rounded-t-2xl p-4 sm:left-1/2 sm:top-1/2 sm:bottom-auto sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:p-5" onOpenAutoFocus={() => setForm(initial())}>
         <DialogHeader><DialogTitle>{entry ? "Edit Measurements" : "Add Measurements"}</DialogTitle><DialogDescription>Enter at least one measurement.</DialogDescription></DialogHeader>
-        <div className="grid grid-cols-2 gap-4 py-2">
+        <div className="grid grid-cols-2 gap-3 py-2">
           <div className="col-span-2"><FieldLabel htmlFor="measurement-date">Date measured</FieldLabel><Input id="measurement-date" type="date" min={minimumDate} max={maximumDate} value={form.measurement_date} onChange={(event) => setForm((current) => ({ ...current, measurement_date: event.target.value }))} /><p className="mt-1.5 text-xs text-muted-foreground">Choose a date in {monthName(selectedMonth)}.</p></div>
           {METRICS.map((item) => <div key={item.key}><FieldLabel htmlFor={item.key}>{item.label}</FieldLabel><div className="relative"><Input id={item.key} type="number" inputMode="decimal" min="0" step="0.1" className="pr-10" value={form[item.key]} onChange={(event) => setForm((current) => ({ ...current, [item.key]: event.target.value }))} /><span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{item.unit}</span></div></div>)}
         </div>
