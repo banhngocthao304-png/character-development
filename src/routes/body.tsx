@@ -227,7 +227,7 @@ function LatestMeasurements({ entries }: { entries: BodyMeasurement[] }) {
                 {difference != null && difference !== 0 ? (
                   <p className="mt-1 text-xs font-medium text-primary">{difference < 0 ? "↓" : "↑"} {formatNumber(Math.abs(difference))} {metric.unit}</p>
                 ) : <div className="h-5" />}
-                <p className="mt-1 text-xs text-muted-foreground">{formatDateShort(latest.measurement_date)}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{latest ? formatDateShort(latest.measurement_date) : ""}</p>
               </>
             ) : (
               <p className="mt-3 text-sm text-muted-foreground">Not recorded</p>
