@@ -93,9 +93,15 @@ export function SessionDetails({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [note]);
 
+  const [picking, setPicking] = useState(false);
+
   const addMutation = useMutation({
-    mutationFn: () => addExercise(session.id, (exercisesQuery.data?.length ?? 0) + 1),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["pt-exercises", session.id] }),
+    mutationFn: (name: string) =>
+      addExercise(session.id, (exercisesQuery.data?.length ?? 0) + 1, name),
+    onSuccess: () => {
+      setPicking(false);
+      queryClient.invalidateQueries({ queryKey: ["pt-exercises", session.id] });
+    },
     onError: () => toast.error("Couldn't add the exercise. Please try again."),
   });
 
