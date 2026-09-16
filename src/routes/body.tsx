@@ -198,10 +198,10 @@ const METRICS = [
   { key: "waist_cm", label: "Waist", unit: "cm", preferred: "lower" },
   { key: "belly_cm", label: "Belly", unit: "cm", preferred: "lower" },
   { key: "hips_cm", label: "Hips", unit: "cm", preferred: "lower" },
-  { key: "glutes_cm", label: "Glutes", unit: "cm", preferred: "lower" },
+  { key: "glutes_cm", label: "Glutes", unit: "cm", preferred: "higher" },
   { key: "upper_arms_cm", label: "Upper Arms", unit: "cm", preferred: "lower" },
   { key: "thighs_cm", label: "Thighs", unit: "cm", preferred: "lower" },
-  { key: "bust_cm", label: "Bust", unit: "cm", preferred: "higher" },
+  { key: "bust_cm", label: "Bust", unit: "cm", preferred: "lower" },
 ] as const;
 type MetricKey = (typeof METRICS)[number]["key"];
 type MetricConfig = (typeof METRICS)[number];
