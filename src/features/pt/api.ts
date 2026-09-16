@@ -125,6 +125,8 @@ export type ExerciseHistoryEntry = {
   exercise_name: string;
   weight: number | null;
   weight_unit: string;
+  sets: number | null;
+  reps: number | null;
   session_date: string;
 };
 
@@ -132,7 +134,7 @@ export type ExerciseHistoryEntry = {
 export async function fetchExerciseHistory(): Promise<ExerciseHistoryEntry[]> {
   const { data, error } = await supabase
     .from("pt_session_exercises")
-    .select("exercise_name, weight, weight_unit, pt_sessions(session_date)")
+    .select("exercise_name, weight, weight_unit, sets, reps, pt_sessions(session_date)")
     .order("created_at", { ascending: false })
     .limit(600);
   if (error) throw error;
@@ -143,10 +145,55 @@ export async function fetchExerciseHistory(): Promise<ExerciseHistoryEntry[]> {
         exercise_name: row.exercise_name,
         weight: row.weight,
         weight_unit: row.weight_unit,
+        sets: row.sets,
+        reps: row.reps,
         session_date: rel?.session_date ?? "",
       };
     })
     .filter((row) => row.exercise_name.trim().length > 0 && row.session_date);
+}
+
+export type LibraryExercise = {
+  id: string;
+  exercise_name: string;
+  primary_muscle_group: string;
+  secondary_muscle_group: string | null;
+  equipment: string | null;
+  aliases: string[];
+  is_custom: boolean;
+};
+
+export async function fetchExerciseLibrary(): Promise<LibraryExercise[]> {
+  const { data, error } = await supabase
+    .from("exercise_library")
+    .select(
+      "id, exercise_name, primary_muscle_group, secondary_muscle_group, equipment, aliases, is_custom",
+    )
+    .order("exercise_name", { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as LibraryExercise[];
+}
+
+/** Save a user-typed exercise name into the library so it is suggested next time. */
+export async function createCustomExercise(name: string): Promise<LibraryExercise | null> {
+  const trimmed = name.trim();
+  if (!trimmed) return null;
+  const userId = await currentUserId();
+  const { data, error } = await supabase
+    .from("exercise_library")
+    .insert({
+      user_id: userId,
+      exercise_name: trimmed,
+      primary_muscle_group: "Custom",
+      is_custom: true,
+    })
+    .select(
+      "id, exercise_name, primary_muscle_group, secondary_muscle_group, equipment, aliases, is_custom",
+    )
+    .maybeSingle();
+  // A duplicate name simply means it already exists — not an error worth surfacing.
+  if (error && error.code !== "23505") throw error;
+  return (data as LibraryExercise | null) ?? null;
 }
 
 /** Most recent weight used for `name` strictly before `beforeISO`. */
