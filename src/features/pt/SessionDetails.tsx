@@ -183,15 +183,19 @@ export function SessionDetails({
         )}
       </div>
 
-      <Button
-        variant="soft"
-        className="mt-3 w-full"
-        onClick={() => addMutation.mutate()}
-        disabled={addMutation.isPending}
-      >
-        {addMutation.isPending ? <Loader2 className="animate-spin" /> : null}
-        Add exercise
-      </Button>
+      {picking ? (
+        <ExercisePicker
+          history={historyQuery.data ?? []}
+          busy={addMutation.isPending}
+          onPick={(name) => addMutation.mutate(name)}
+          onCancel={() => setPicking(false)}
+        />
+      ) : (
+        <Button variant="soft" className="mt-3 w-full" onClick={() => setPicking(true)}>
+          {addMutation.isPending ? <Loader2 className="animate-spin" /> : null}
+          Add exercise
+        </Button>
+      )}
 
       <div className="mt-3">
         <FieldLabel htmlFor="session-note" hint="(optional)">
