@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Chip, FieldLabel, Skeleton } from "@/components/ui-kit";
 import { formatDate, formatDateShort } from "@/lib/dates";
+import { ExercisePicker } from "./ExercisePicker";
 import { SESSION_TYPES } from "@/lib/pt";
 import {
   addExercise,
