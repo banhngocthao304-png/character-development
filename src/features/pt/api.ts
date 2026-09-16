@@ -94,14 +94,14 @@ export async function fetchExercises(sessionId: string) {
   return (data ?? []) as PtExercise[];
 }
 
-export async function addExercise(sessionId: string, sortOrder: number) {
+export async function addExercise(sessionId: string, sortOrder: number, name = "") {
   const userId = await currentUserId();
   const { data, error } = await supabase
     .from("pt_session_exercises")
     .insert({
       user_id: userId,
       pt_session_id: sessionId,
-      exercise_name: "",
+      exercise_name: name,
       weight_unit: "kg",
       sort_order: sortOrder,
     })
