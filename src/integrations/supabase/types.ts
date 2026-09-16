@@ -71,6 +71,45 @@ export type Database = {
         }
         Relationships: []
       }
+      exercise_library: {
+        Row: {
+          aliases: string[]
+          created_at: string
+          equipment: string | null
+          exercise_name: string
+          id: string
+          is_custom: boolean
+          primary_muscle_group: string
+          secondary_muscle_group: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          aliases?: string[]
+          created_at?: string
+          equipment?: string | null
+          exercise_name: string
+          id?: string
+          is_custom?: boolean
+          primary_muscle_group: string
+          secondary_muscle_group?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          aliases?: string[]
+          created_at?: string
+          equipment?: string | null
+          exercise_name?: string
+          id?: string
+          is_custom?: boolean
+          primary_muscle_group?: string
+          secondary_muscle_group?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       food_option_categories: {
         Row: {
           created_at: string

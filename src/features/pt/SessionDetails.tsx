@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Chip, FieldLabel, Skeleton } from "@/components/ui-kit";
 import { formatDate, formatDateShort } from "@/lib/dates";
+import { ExercisePicker } from "./ExercisePicker";
 import { SESSION_TYPES } from "@/lib/pt";
 import {
   addExercise,
@@ -93,9 +94,15 @@ export function SessionDetails({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [note]);
 
+  const [picking, setPicking] = useState(false);
+
   const addMutation = useMutation({
-    mutationFn: () => addExercise(session.id, (exercisesQuery.data?.length ?? 0) + 1),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["pt-exercises", session.id] }),
+    mutationFn: (name: string) =>
+      addExercise(session.id, (exercisesQuery.data?.length ?? 0) + 1, name),
+    onSuccess: () => {
+      setPicking(false);
+      queryClient.invalidateQueries({ queryKey: ["pt-exercises", session.id] });
+    },
     onError: () => toast.error("Couldn't add the exercise. Please try again."),
   });
 
@@ -177,15 +184,19 @@ export function SessionDetails({
         )}
       </div>
 
-      <Button
-        variant="soft"
-        className="mt-3 w-full"
-        onClick={() => addMutation.mutate()}
-        disabled={addMutation.isPending}
-      >
-        {addMutation.isPending ? <Loader2 className="animate-spin" /> : null}
-        Add exercise
-      </Button>
+      {picking ? (
+        <ExercisePicker
+          history={historyQuery.data ?? []}
+          busy={addMutation.isPending}
+          onPick={(name) => addMutation.mutate(name)}
+          onCancel={() => setPicking(false)}
+        />
+      ) : (
+        <Button variant="soft" className="mt-3 w-full" onClick={() => setPicking(true)}>
+          {addMutation.isPending ? <Loader2 className="animate-spin" /> : null}
+          Add exercise
+        </Button>
+      )}
 
       <div className="mt-3">
         <FieldLabel htmlFor="session-note" hint="(optional)">
