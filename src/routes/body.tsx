@@ -100,6 +100,8 @@ function BodyPage() {
       />
 
       <div className="space-y-3 lg:space-y-3.5">
+        <TargetProgress entries={entries} loading={measurementsQuery.isLoading} />
+
         <Card className="border-primary/30 shadow-lift">
           <MonthNavigation month={selectedMonth} onChange={setSelectedMonth} />
           {measurementsQuery.isLoading ? (
