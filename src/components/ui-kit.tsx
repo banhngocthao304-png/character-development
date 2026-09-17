@@ -22,9 +22,10 @@ export function CardTitle({
   action?: ReactNode;
   className?: string;
 }) {
+  const isText = typeof children === "string" || typeof children === "number";
   return (
     <div className={cn("mb-2 flex items-center justify-between gap-2", className)}>
-      <h2 className="min-w-0 truncate text-base font-semibold sm:text-lg">{children}</h2>
+      <h2 className={cn("min-w-0 text-base font-semibold sm:text-lg", isText ? "truncate" : "whitespace-normal")}>{children}</h2>
       {action ? <div className="shrink-0">{action}</div> : null}
     </div>
   );

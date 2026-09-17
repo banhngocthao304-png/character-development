@@ -401,7 +401,10 @@ function TargetProgress({ entries, loading }: { entries: BodyMeasurement[]; load
   return (
     <Card>
       <CardTitle action={<Button variant="ghost" size="sm" onClick={() => setEditing(true)}>Edit Targets</Button>}>
-        Target Progress
+        <span className="inline-flex flex-wrap items-baseline gap-x-1.5">
+          <span>Target Progress</span>
+          <span className="text-xs font-normal text-muted-foreground">(unfortunately, progress requires effort…)</span>
+        </span>
       </CardTitle>
       {loading || targetsQuery.isLoading ? (
         <Skeleton className="h-32" />
