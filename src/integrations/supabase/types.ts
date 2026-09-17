@@ -19,6 +19,7 @@ export type Database = {
           belly_cm: number | null
           bmi: number | null
           body_fat_mass_kg: number | null
+          body_fat_percent: number | null
           bust_cm: number | null
           created_at: string
           glutes_cm: number | null
@@ -37,6 +38,7 @@ export type Database = {
           belly_cm?: number | null
           bmi?: number | null
           body_fat_mass_kg?: number | null
+          body_fat_percent?: number | null
           bust_cm?: number | null
           created_at?: string
           glutes_cm?: number | null
@@ -55,6 +57,7 @@ export type Database = {
           belly_cm?: number | null
           bmi?: number | null
           body_fat_mass_kg?: number | null
+          body_fat_percent?: number | null
           bust_cm?: number | null
           created_at?: string
           glutes_cm?: number | null
