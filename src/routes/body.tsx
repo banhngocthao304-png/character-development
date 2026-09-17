@@ -43,8 +43,11 @@ import {
   createBodyMeasurement,
   deleteBodyMeasurement,
   fetchBodyMeasurements,
+  fetchBodyTargets,
+  saveBodyTargets,
   updateBodyMeasurement,
   type BodyMeasurement,
+  type BodyTargets,
   type MeasurementValues,
 } from "@/features/body/api";
 import { formatDate, formatDateShort, parseISODate, todayISO } from "@/lib/dates";
@@ -379,6 +382,176 @@ function MeasurementHistory({ entries, onEdit, onDelete }: { entries: BodyMeasur
         </table>
       </div>
     </>
+  );
+}
+
+const TARGET_METRICS = [
+  { key: "weight_kg", label: "Weight", unit: "kg" },
+  { key: "body_fat_percent", label: "Body Fat", unit: "%" },
+  { key: "bmi", label: "BMI", unit: "" },
+] as const;
+type TargetKey = (typeof TARGET_METRICS)[number]["key"];
+
+function TargetProgress({ entries, loading }: { entries: BodyMeasurement[]; loading: boolean }) {
+  const queryClient = useQueryClient();
+  const targetsQuery = useQuery({ queryKey: ["body-targets"], queryFn: fetchBodyTargets });
+  const [editing, setEditing] = useState(false);
+  const targets = targetsQuery.data ?? null;
+
+  return (
+    <Card>
+      <CardTitle action={<Button variant="ghost" size="sm" onClick={() => setEditing(true)}>Edit Targets</Button>}>
+        Target Progress
+      </CardTitle>
+      {loading || targetsQuery.isLoading ? (
+        <Skeleton className="h-32" />
+      ) : (
+        <div className="space-y-2.5">
+          {TARGET_METRICS.map((metric) => (
+            <TargetRow
+              key={metric.key}
+              metric={metric}
+              entries={entries}
+              target={targets ? targets[metric.key] : null}
+            />
+          ))}
+        </div>
+      )}
+      <TargetForm
+        open={editing}
+        targets={targets}
+        onOpenChange={setEditing}
+        onSaved={() => {
+          setEditing(false);
+          void queryClient.invalidateQueries({ queryKey: ["body-targets"] });
+        }}
+      />
+    </Card>
+  );
+}
+
+function TargetRow({
+  metric,
+  entries,
+  target,
+}: {
+  metric: (typeof TARGET_METRICS)[number];
+  entries: BodyMeasurement[];
+  target: number | null;
+}) {
+  // entries are newest-first
+  const withValue = entries.filter((entry) => entry[metric.key] != null);
+  const current = withValue.length > 0 ? Number(withValue[0]![metric.key]) : null;
+  const starting = withValue.length > 0 ? Number(withValue[withValue.length - 1]![metric.key]) : null;
+  const unit = metric.unit ? ` ${metric.unit}` : "";
+
+  const hasData = current != null && starting != null && target != null && starting !== target;
+  const totalChange = hasData ? starting - target : 0;
+  const madeChange = hasData ? starting - current : 0;
+  const rawPercent = hasData ? (madeChange / totalChange) * 100 : 0;
+  const percent = Math.min(100, Math.max(0, rawPercent));
+  const reached = hasData && rawPercent >= 100;
+  const toGo = hasData ? Math.max(0, current - target) : 0;
+
+  return (
+    <div className="rounded-xl bg-lavender-faint/55 px-3 py-2.5">
+      <div className="flex items-baseline justify-between gap-2">
+        <p className="text-xs font-medium uppercase text-muted-foreground">{metric.label}</p>
+        <p className="text-sm font-semibold tabular-nums">
+          {current == null ? "—" : `${formatNumber(current)}${unit}`}
+          <span className="mx-1 font-normal text-muted-foreground">→</span>
+          {target == null ? "—" : `${formatNumber(target)}${unit}`}
+        </p>
+      </div>
+      {hasData ? (
+        <>
+          <div className="mt-2 flex items-center gap-2">
+            <div className="h-2 flex-1 overflow-hidden rounded-full bg-lavender-soft">
+              <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${percent}%` }} />
+            </div>
+            <span className="w-9 shrink-0 text-right text-sm font-semibold tabular-nums text-primary">
+              {Math.round(percent)}%
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {reached
+              ? "Target reached ✓"
+              : `${madeChange > 0 ? `${formatNumber(madeChange)}${unit} down · ` : ""}${formatNumber(toGo)}${unit} to go`}
+          </p>
+        </>
+      ) : (
+        <p className="mt-1.5 text-xs text-muted-foreground">Not enough data yet</p>
+      )}
+    </div>
+  );
+}
+
+function TargetForm({
+  open,
+  targets,
+  onOpenChange,
+  onSaved,
+}: {
+  open: boolean;
+  targets: BodyTargets | null;
+  onOpenChange: (open: boolean) => void;
+  onSaved: () => void;
+}) {
+  const initial = () =>
+    Object.fromEntries(
+      TARGET_METRICS.map((item) => [item.key, targets?.[item.key]?.toString() ?? ""]),
+    ) as Record<TargetKey, string>;
+  const [form, setForm] = useState<Record<TargetKey, string>>(initial);
+  const mutation = useMutation({
+    mutationFn: () =>
+      saveBodyTargets({
+        weight_kg: form.weight_kg === "" ? null : Number(form.weight_kg),
+        body_fat_percent: form.body_fat_percent === "" ? null : Number(form.body_fat_percent),
+        bmi: form.bmi === "" ? null : Number(form.bmi),
+      }),
+    onSuccess: () => {
+      toast.success("Targets updated");
+      onSaved();
+    },
+    onError: () => toast.error("Couldn't save your targets. Please try again."),
+  });
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-sm p-4 sm:p-5" onOpenAutoFocus={() => setForm(initial())}>
+        <DialogHeader>
+          <DialogTitle>Edit Targets</DialogTitle>
+          <DialogDescription>Your goal values for weight, body fat and BMI.</DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-3 py-1">
+          {TARGET_METRICS.map((item) => (
+            <div key={item.key}>
+              <FieldLabel htmlFor={`target-${item.key}`}>{item.label}</FieldLabel>
+              <div className="relative">
+                <Input
+                  id={`target-${item.key}`}
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  step="0.1"
+                  className="pr-10"
+                  value={form[item.key]}
+                  onChange={(event) => setForm((current) => ({ ...current, [item.key]: event.target.value }))}
+                />
+                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                  {item.unit}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <DialogFooter className="gap-2">
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button type="button" disabled={mutation.isPending} onClick={() => mutation.mutate()}>
+            {mutation.isPending ? "Saving…" : "Save Targets"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
