@@ -74,6 +74,36 @@ export type Database = {
         }
         Relationships: []
       }
+      body_targets: {
+        Row: {
+          bmi: number | null
+          body_fat_percent: number | null
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+          weight_kg: number | null
+        }
+        Insert: {
+          bmi?: number | null
+          body_fat_percent?: number | null
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+          weight_kg?: number | null
+        }
+        Update: {
+          bmi?: number | null
+          body_fat_percent?: number | null
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+          weight_kg?: number | null
+        }
+        Relationships: []
+      }
       exercise_library: {
         Row: {
           aliases: string[]

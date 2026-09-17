@@ -79,3 +79,47 @@ export async function deleteBodyMeasurement(id: string): Promise<void> {
   const { error } = await supabase.from("body_measurements").delete().eq("id", id);
   if (error) throw error;
 }
+
+export type BodyTargets = {
+  id: string;
+  weight_kg: number | null;
+  body_fat_percent: number | null;
+  bmi: number | null;
+};
+
+const TARGET_FIELDS = "id, weight_kg, body_fat_percent, bmi";
+
+export async function fetchBodyTargets(): Promise<BodyTargets | null> {
+  const { data, error } = await supabase
+    .from("body_targets")
+    .select(TARGET_FIELDS)
+    .eq("user_id", OWNER_ID)
+    .maybeSingle();
+  if (error) throw error;
+  return (data as BodyTargets | null) ?? null;
+}
+
+export async function saveBodyTargets(values: {
+  weight_kg: number | null;
+  body_fat_percent: number | null;
+  bmi: number | null;
+}): Promise<BodyTargets> {
+  const existing = await fetchBodyTargets();
+  if (existing) {
+    const { data, error } = await supabase
+      .from("body_targets")
+      .update(values)
+      .eq("id", existing.id)
+      .select(TARGET_FIELDS)
+      .single();
+    if (error) throw error;
+    return data as BodyTargets;
+  }
+  const { data, error } = await supabase
+    .from("body_targets")
+    .insert({ ...values, user_id: OWNER_ID })
+    .select(TARGET_FIELDS)
+    .single();
+  if (error) throw error;
+  return data as BodyTargets;
+}
