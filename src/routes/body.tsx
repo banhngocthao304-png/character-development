@@ -193,7 +193,7 @@ function BodyPage() {
 const METRICS = [
   { key: "weight_kg", label: "Weight", unit: "kg", preferred: "lower" },
   { key: "bmi", label: "BMI", unit: "", preferred: "lower" },
-  { key: "body_fat_mass_kg", label: "Body Fat Mass", unit: "kg", preferred: "lower" },
+  { key: "body_fat_percent", label: "Body Fat %", unit: "%", preferred: "lower" },
   { key: "muscle_mass_kg", label: "Muscle Mass", unit: "kg", preferred: "higher" },
   { key: "waist_cm", label: "Waist", unit: "cm", preferred: "lower" },
   { key: "belly_cm", label: "Belly", unit: "cm", preferred: "lower" },
