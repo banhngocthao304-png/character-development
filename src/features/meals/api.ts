@@ -103,7 +103,7 @@ export async function deleteMealItem(id: string) {
   if (error) throw error;
 }
 
-async function swapOrder(table: "meal_plan_meals" | "meal_plan_items" | "food_option_categories" | "food_options", first: { id: string; sort_order: number }, second: { id: string; sort_order: number }) {
+async function swapOrder(table: "meal_plan_meals" | "meal_plan_items" | "food_option_categories" | "food_options" | "supplements", first: { id: string; sort_order: number }, second: { id: string; sort_order: number }) {
   const firstResult = await supabase.from(table).update({ sort_order: second.sort_order }).eq("id", first.id);
   if (firstResult.error) throw firstResult.error;
   const secondResult = await supabase.from(table).update({ sort_order: first.sort_order }).eq("id", second.id);
