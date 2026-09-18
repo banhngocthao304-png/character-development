@@ -467,6 +467,48 @@ export type Database = {
         }
         Relationships: []
       }
+      supplements: {
+        Row: {
+          created_at: string
+          dosage: number
+          frequency: string
+          id: string
+          name: string
+          note: string | null
+          sort_order: number
+          timing: string | null
+          unit: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dosage: number
+          frequency: string
+          id?: string
+          name: string
+          note?: string | null
+          sort_order?: number
+          timing?: string | null
+          unit: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          dosage?: number
+          frequency?: string
+          id?: string
+          name?: string
+          note?: string | null
+          sort_order?: number
+          timing?: string | null
+          unit?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
