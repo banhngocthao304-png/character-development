@@ -7,6 +7,7 @@ export type MealPlanMeal = Tables<"meal_plan_meals">;
 export type MealPlanItem = Tables<"meal_plan_items">;
 export type FoodOptionCategory = Tables<"food_option_categories">;
 export type FoodOption = Tables<"food_options">;
+export type Supplement = Tables<"supplements">;
 
 export type MealWithItems = MealPlanMeal & { items: MealPlanItem[] };
 export type CategoryWithOptions = FoodOptionCategory & { options: FoodOption[] };
@@ -15,6 +16,7 @@ export type MealsData = {
   target: NutritionTarget | null;
   meals: MealWithItems[];
   categories: CategoryWithOptions[];
+  supplements: Supplement[];
 };
 
 export async function fetchMealsData(): Promise<MealsData> {
@@ -25,7 +27,8 @@ export async function fetchMealsData(): Promise<MealsData> {
     supabase.from("food_option_categories").select("*").eq("user_id", OWNER_ID).order("sort_order"),
     supabase.from("food_options").select("*").eq("user_id", OWNER_ID).order("sort_order"),
   ]);
-  const error = targetResult.error ?? mealsResult.error ?? itemsResult.error ?? categoriesResult.error ?? optionsResult.error;
+  const supplementsResult = await supabase.from("supplements").select("*").eq("user_id", OWNER_ID).order("sort_order");
+  const error = targetResult.error ?? mealsResult.error ?? itemsResult.error ?? categoriesResult.error ?? optionsResult.error ?? supplementsResult.error;
   if (error) throw error;
 
   const items = itemsResult.data ?? [];
@@ -40,6 +43,7 @@ export async function fetchMealsData(): Promise<MealsData> {
       ...category,
       options: options.filter((option) => option.category_id === category.id),
     })),
+    supplements: supplementsResult.data ?? [],
   };
 }
 
@@ -142,3 +146,29 @@ export async function deleteFoodOption(id: string) {
   const { error } = await supabase.from("food_options").delete().eq("id", id);
   if (error) throw error;
 }
+
+export type SupplementValues = Pick<Supplement, "name" | "dosage" | "unit" | "frequency" | "timing" | "note">;
+
+export async function addSupplement(values: SupplementValues, sortOrder: number) {
+  const { error } = await supabase.from("supplements").insert({
+    user_id: OWNER_ID, sort_order: sortOrder,
+    name: values.name.trim(), dosage: values.dosage, unit: values.unit.trim(),
+    frequency: values.frequency.trim(), timing: values.timing?.trim() || null, note: values.note?.trim() || null,
+  });
+  if (error) throw error;
+}
+
+export async function updateSupplement(id: string, values: SupplementValues) {
+  const { error } = await supabase.from("supplements").update({
+    name: values.name.trim(), dosage: values.dosage, unit: values.unit.trim(),
+    frequency: values.frequency.trim(), timing: values.timing?.trim() || null, note: values.note?.trim() || null,
+  }).eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteSupplement(id: string) {
+  const { error } = await supabase.from("supplements").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export const reorderSupplements = (first: Supplement, second: Supplement) => swapOrder("supplements", first, second);
