@@ -9,11 +9,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import {
-  addCategory, addFoodOption, addMeal, addMealItem, deleteCategory, deleteFoodOption,
-  deleteMeal, deleteMealItem, fetchMealsData, renameCategory, renameFoodOption, renameMeal,
-  reorderCategories, reorderFoodOptions, reorderMealItems, reorderMeals, saveNutritionTarget,
-  updateMealItem, type CategoryWithOptions, type FoodOption, type ItemValues,
-  type MealPlanItem, type MealWithItems, type NutritionTarget, type TargetValues,
+  addCategory, addFoodOption, addMeal, addMealItem, addSupplement, deleteCategory, deleteFoodOption,
+  deleteMeal, deleteMealItem, deleteSupplement, fetchMealsData, renameCategory, renameFoodOption, renameMeal,
+  reorderCategories, reorderFoodOptions, reorderMealItems, reorderMeals, reorderSupplements, saveNutritionTarget,
+  updateMealItem, updateSupplement, type CategoryWithOptions, type FoodOption, type ItemValues,
+  type MealPlanItem, type MealWithItems, type NutritionTarget, type Supplement, type SupplementValues, type TargetValues,
 } from "./api";
 
 const QUERY_KEY = ["meals"];
@@ -38,10 +38,11 @@ export function MealsPage() {
     <>
       <PageHeader icon={<UtensilsCrossed className="size-5" />} title="Meals" subtitle="eat like an adult" />
       <Tabs defaultValue="target" className="space-y-3">
-        <TabsList className="grid h-8 w-full grid-cols-3 rounded-xl bg-lavender-faint p-0.5 sm:max-w-xl">
+        <TabsList className="grid h-8 w-full grid-cols-4 rounded-xl bg-lavender-faint p-0.5 sm:max-w-xl">
           <TabsTrigger value="target" className="h-9 px-1 text-[11px] sm:text-sm">Daily Target</TabsTrigger>
           <TabsTrigger value="plan" className="h-9 px-1 text-[11px] sm:text-sm">Meal Plan</TabsTrigger>
           <TabsTrigger value="options" className="h-9 px-1 text-[11px] sm:text-sm">Food Options</TabsTrigger>
+          <TabsTrigger value="supplements" className="h-9 px-1 text-[11px] sm:text-sm">Supplements</TabsTrigger>
         </TabsList>
         {query.isLoading ? <Skeleton className="h-72" /> : query.isError || !data ? (
           <Card><EmptyState title="Meals couldn't load" description="Please refresh and try again." /></Card>
@@ -50,6 +51,7 @@ export function MealsPage() {
             <TabsContent value="target" className="mt-0"><DailyTargetSection target={data.target} run={run} /></TabsContent>
             <TabsContent value="plan" className="mt-0"><MealPlanSection meals={data.meals} foodNames={data.categories.flatMap((c) => c.options.map((o) => o.name))} run={run} /></TabsContent>
             <TabsContent value="options" className="mt-0"><FoodOptionsSection categories={data.categories} run={run} /></TabsContent>
+            <TabsContent value="supplements" className="mt-0"><SupplementsSection supplements={data.supplements} run={run} /></TabsContent>
           </>
         )}
       </Tabs>
