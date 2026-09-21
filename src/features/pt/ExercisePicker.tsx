@@ -15,6 +15,7 @@ function norm(value: string): string {
 }
 
 type Suggestion = {
+  libraryId: string | null;
   name: string;
   detail: string | null;
   history: ExerciseHistoryEntry | null;
@@ -64,7 +65,7 @@ export function ExercisePicker({
   busy,
 }: {
   history: ExerciseHistoryEntry[];
-  onPick: (name: string) => void;
+  onPick: (name: string, libraryId: string | null) => void;
   onCancel: () => void;
   busy?: boolean;
 }) {
@@ -94,6 +95,7 @@ export function ExercisePicker({
       if (!key || used.has(key)) continue;
       used.add(key);
       seen.push({
+        libraryId: null,
         name: entry.exercise_name.trim(),
         detail: null,
         history: entry,
@@ -116,6 +118,7 @@ export function ExercisePicker({
       const lib = library.find((l) => norm(l.exercise_name) === key);
       covered.add(key);
       items.push({
+        libraryId: lib?.id ?? null,
         name: entry.exercise_name.trim(),
         detail: lib ? muscleLine(lib) : null,
         history: entry,
@@ -128,7 +131,13 @@ export function ExercisePicker({
       if (covered.has(key)) continue;
       const score = matchScore(query, lib.exercise_name, lib.aliases ?? []);
       if (score == null) continue;
-      items.push({ name: lib.exercise_name, detail: muscleLine(lib), history: null, score });
+      items.push({
+        libraryId: lib.id,
+        name: lib.exercise_name,
+        detail: muscleLine(lib),
+        history: null,
+        score,
+      });
     }
 
     return items
@@ -142,15 +151,15 @@ export function ExercisePicker({
       (n) => norm(n) === norm(query),
     );
 
-  function pick(name: string) {
-    onPick(name);
+  function pick(name: string, libraryId: string | null) {
+    onPick(name, libraryId);
   }
 
   async function addCustom() {
     const name = query.trim();
     if (!name) return;
-    await customMutation.mutateAsync(name).catch(() => undefined);
-    pick(name);
+    const created = await customMutation.mutateAsync(name).catch(() => null);
+    pick(name, created?.id ?? null);
   }
 
   const list = query.trim() ? results : recent;
@@ -171,7 +180,7 @@ export function ExercisePicker({
               if (e.key === "Enter") {
                 e.preventDefault();
                 const first = list[0];
-                if (first) pick(first.name);
+                if (first) pick(first.name, first.libraryId);
                 else void addCustom();
               }
             }}
@@ -205,7 +214,7 @@ export function ExercisePicker({
                   <button
                     type="button"
                     disabled={busy}
-                    onClick={() => pick(item.name)}
+                    onClick={() => pick(item.name, item.libraryId)}
                     className="flex w-full items-center justify-between gap-2 rounded-xl px-2 py-2 text-left hover:bg-lavender-faint disabled:opacity-60"
                   >
                     <span className="min-w-0">

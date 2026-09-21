@@ -366,6 +366,7 @@ export type Database = {
       pt_session_exercises: {
         Row: {
           created_at: string
+          exercise_library_id: string | null
           exercise_name: string
           exercise_note: string | null
           id: string
@@ -380,6 +381,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          exercise_library_id?: string | null
           exercise_name: string
           exercise_note?: string | null
           id?: string
@@ -394,6 +396,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          exercise_library_id?: string | null
           exercise_name?: string
           exercise_note?: string | null
           id?: string
@@ -407,6 +410,13 @@ export type Database = {
           weight_unit?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "pt_session_exercises_exercise_library_id_fkey"
+            columns: ["exercise_library_id"]
+            isOneToOne: false
+            referencedRelation: "exercise_library"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "pt_session_exercises_pt_session_id_fkey"
             columns: ["pt_session_id"]
@@ -526,7 +536,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      resolve_exercise_library_id: {
+        Args: { _exercise_name: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
