@@ -154,6 +154,7 @@ export async function addSupplement(values: SupplementValues, sortOrder: number)
     user_id: OWNER_ID, sort_order: sortOrder,
     name: values.name.trim(), dosage: values.dosage, unit: values.unit.trim(),
     frequency: values.frequency.trim(), timing: values.timing?.trim() || null, note: values.note?.trim() || null,
+    daily_quantity: values.daily_quantity ?? null,
   });
   if (error) throw error;
 }
@@ -162,6 +163,7 @@ export async function updateSupplement(id: string, values: SupplementValues) {
   const { error } = await supabase.from("supplements").update({
     name: values.name.trim(), dosage: values.dosage, unit: values.unit.trim(),
     frequency: values.frequency.trim(), timing: values.timing?.trim() || null, note: values.note?.trim() || null,
+    daily_quantity: values.daily_quantity ?? null,
   }).eq("id", id);
   if (error) throw error;
 }

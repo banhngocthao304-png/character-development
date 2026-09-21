@@ -215,7 +215,7 @@ function SupplementsSection({ supplements, run }: { supplements: Supplement[]; r
         <div key={item.id} className="flex min-h-11 items-center gap-1 px-3 py-2">
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">{item.name}</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">{numberText(item.dosage)} {item.unit} · {item.frequency}{item.timing ? ` · ${item.timing}` : ""}{item.note ? <><br />{item.note}</> : null}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{numberText(item.dosage)} {item.unit}{item.daily_quantity != null ? ` · ${numberText(item.daily_quantity)} ${item.unit}/day` : ""} · {item.frequency}{item.timing ? ` · ${item.timing}` : ""}{item.note ? <><br />{item.note}</> : null}</p>
           </div>
           {editing ? <><OrderButtons index={index} total={supplements.length} onMove={move} label="supplement" /><Button variant="ghost" size="iconSm" aria-label={`Edit ${item.name}`} onClick={() => setEditor({ item })}><Pencil /></Button><Button variant="ghost" size="iconSm" className="text-destructive" aria-label={`Delete ${item.name}`} onClick={() => setDeleteTarget(item)}><Trash2 /></Button></> : null}
         </div>
