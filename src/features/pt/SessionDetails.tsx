@@ -102,6 +102,7 @@ export function SessionDetails({
     onSuccess: () => {
       setPicking(false);
       queryClient.invalidateQueries({ queryKey: ["pt-exercises", session.id] });
+      queryClient.invalidateQueries({ queryKey: ["pt-muscle-balance"] });
     },
     onError: () => toast.error("Couldn't add the exercise. Please try again."),
   });
@@ -266,6 +267,7 @@ function ExerciseRow({
     onSuccess: () => {
       onSaved();
       queryClient.invalidateQueries({ queryKey: ["pt-exercise-history"] });
+      queryClient.invalidateQueries({ queryKey: ["pt-muscle-balance"] });
     },
     onError: () => toast.error("Couldn't save this exercise. Please try again."),
   });
@@ -275,6 +277,7 @@ function ExerciseRow({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pt-exercises", exercise.pt_session_id] });
       queryClient.invalidateQueries({ queryKey: ["pt-exercise-history"] });
+      queryClient.invalidateQueries({ queryKey: ["pt-muscle-balance"] });
     },
     onError: () => toast.error("Couldn't remove this exercise. Please try again."),
   });

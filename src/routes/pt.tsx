@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { PtCalendar } from "@/features/pt/PtCalendar";
 import { SessionDetails } from "@/features/pt/SessionDetails";
+import { MuscleBalance } from "@/features/pt/MuscleBalance";
 import {
   createSession,
   deleteSession,
@@ -105,6 +106,7 @@ function PtPage() {
       setPendingRemove(null);
       queryClient.invalidateQueries({ queryKey: ["pt-sessions"] });
       queryClient.invalidateQueries({ queryKey: ["pt-exercise-history"] });
+      queryClient.invalidateQueries({ queryKey: ["pt-muscle-balance"] });
     },
     onError: () => toast.error("Couldn't remove this PT session. Please try again."),
   });
@@ -196,9 +198,12 @@ function PtPage() {
               busyDate={createMutation.isPending ? createMutation.variables ?? null : null}
             />
           </Card>
+
         </div>
 
-        <Card className="lg:sticky lg:top-6 lg:self-start">
+        <MuscleBalance cycle={period} className="lg:col-span-2 lg:row-start-2" />
+
+        <Card className="lg:col-start-2 lg:row-start-1 lg:self-start">
           <CardTitle>Session details</CardTitle>
           {selectedSession ? (
             <SessionDetails
