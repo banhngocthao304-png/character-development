@@ -113,7 +113,9 @@ export type Database = {
           id: string
           is_custom: boolean
           primary_muscle_group: string
+          primary_muscle_groups: string[]
           secondary_muscle_group: string | null
+          secondary_muscle_groups: string[]
           updated_at: string
           user_id: string
         }
@@ -125,7 +127,9 @@ export type Database = {
           id?: string
           is_custom?: boolean
           primary_muscle_group: string
+          primary_muscle_groups?: string[]
           secondary_muscle_group?: string | null
+          secondary_muscle_groups?: string[]
           updated_at?: string
           user_id?: string
         }
@@ -137,7 +141,9 @@ export type Database = {
           id?: string
           is_custom?: boolean
           primary_muscle_group?: string
+          primary_muscle_groups?: string[]
           secondary_muscle_group?: string | null
+          secondary_muscle_groups?: string[]
           updated_at?: string
           user_id?: string
         }

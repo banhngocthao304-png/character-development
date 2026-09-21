@@ -130,6 +130,12 @@ export type ExerciseHistoryEntry = {
   session_date: string;
 };
 
+export type MuscleBalanceExercise = {
+  exercise_name: string;
+  sets: number | null;
+  session_date: string;
+};
+
 /** All previously logged exercises (own data only), newest session first. */
 export async function fetchExerciseHistory(): Promise<ExerciseHistoryEntry[]> {
   const { data, error } = await supabase
@@ -153,11 +159,31 @@ export async function fetchExerciseHistory(): Promise<ExerciseHistoryEntry[]> {
     .filter((row) => row.exercise_name.trim().length > 0 && row.session_date);
 }
 
+/** Complete exercise history used for period-based working-set summaries. */
+export async function fetchMuscleBalanceExercises(): Promise<MuscleBalanceExercise[]> {
+  const { data, error } = await supabase
+    .from("pt_session_exercises")
+    .select("exercise_name, sets, pt_sessions(session_date)");
+  if (error) throw error;
+  return (data ?? [])
+    .map((row) => {
+      const rel = row.pt_sessions as unknown as { session_date: string } | null;
+      return {
+        exercise_name: row.exercise_name,
+        sets: row.sets,
+        session_date: rel?.session_date ?? "",
+      };
+    })
+    .filter((row) => row.exercise_name.trim().length > 0 && row.session_date);
+}
+
 export type LibraryExercise = {
   id: string;
   exercise_name: string;
   primary_muscle_group: string;
+  primary_muscle_groups: string[];
   secondary_muscle_group: string | null;
+  secondary_muscle_groups: string[];
   equipment: string | null;
   aliases: string[];
   is_custom: boolean;
@@ -167,7 +193,7 @@ export async function fetchExerciseLibrary(): Promise<LibraryExercise[]> {
   const { data, error } = await supabase
     .from("exercise_library")
     .select(
-      "id, exercise_name, primary_muscle_group, secondary_muscle_group, equipment, aliases, is_custom",
+      "id, exercise_name, primary_muscle_group, primary_muscle_groups, secondary_muscle_group, secondary_muscle_groups, equipment, aliases, is_custom",
     )
     .order("exercise_name", { ascending: true });
   if (error) throw error;
@@ -188,7 +214,7 @@ export async function createCustomExercise(name: string): Promise<LibraryExercis
       is_custom: true,
     })
     .select(
-      "id, exercise_name, primary_muscle_group, secondary_muscle_group, equipment, aliases, is_custom",
+      "id, exercise_name, primary_muscle_group, primary_muscle_groups, secondary_muscle_group, secondary_muscle_groups, equipment, aliases, is_custom",
     )
     .maybeSingle();
   // A duplicate name simply means it already exists — not an error worth surfacing.
