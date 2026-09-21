@@ -1,0 +1,1 @@
+ALTER TABLE public.supplements ADD COLUMN daily_quantity numeric;

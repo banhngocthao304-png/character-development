@@ -470,6 +470,7 @@ export type Database = {
       supplements: {
         Row: {
           created_at: string
+          daily_quantity: number | null
           dosage: number
           frequency: string
           id: string
@@ -483,6 +484,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          daily_quantity?: number | null
           dosage: number
           frequency: string
           id?: string
@@ -496,6 +498,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          daily_quantity?: number | null
           dosage?: number
           frequency?: string
           id?: string
