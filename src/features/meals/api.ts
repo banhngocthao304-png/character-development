@@ -147,7 +147,7 @@ export async function deleteFoodOption(id: string) {
   if (error) throw error;
 }
 
-export type SupplementValues = Pick<Supplement, "name" | "dosage" | "unit" | "frequency" | "timing" | "note" | "daily_quantity">;
+export type SupplementValues = Pick<Supplement, "name" | "dosage" | "unit" | "frequency" | "timing" | "note" | "daily_quantity" | "daily_quantity_unit">;
 
 export async function addSupplement(values: SupplementValues, sortOrder: number) {
   const { error } = await supabase.from("supplements").insert({
@@ -155,6 +155,7 @@ export async function addSupplement(values: SupplementValues, sortOrder: number)
     name: values.name.trim(), dosage: values.dosage, unit: values.unit.trim(),
     frequency: values.frequency.trim(), timing: values.timing?.trim() || null, note: values.note?.trim() || null,
     daily_quantity: values.daily_quantity ?? null,
+    daily_quantity_unit: values.daily_quantity_unit?.trim() || null,
   });
   if (error) throw error;
 }
@@ -164,6 +165,7 @@ export async function updateSupplement(id: string, values: SupplementValues) {
     name: values.name.trim(), dosage: values.dosage, unit: values.unit.trim(),
     frequency: values.frequency.trim(), timing: values.timing?.trim() || null, note: values.note?.trim() || null,
     daily_quantity: values.daily_quantity ?? null,
+    daily_quantity_unit: values.daily_quantity_unit?.trim() || null,
   }).eq("id", id);
   if (error) throw error;
 }

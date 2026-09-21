@@ -197,9 +197,16 @@ function ConfirmDelete({ state, onClose, onConfirm }: { state: DeleteState; onCl
   return <AlertDialog open={state !== null} onOpenChange={(open) => !open && onClose()}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Remove {state?.name}?</AlertDialogTitle><AlertDialogDescription>{state?.kind === "category" ? "All food options in this category will also be deleted." : "All food items in this meal will also be deleted."}</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={async () => { if (state) await onConfirm(state); onClose(); }}>Remove</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>;
 }
 
-const SUPPLEMENT_UNITS = ["g", "mg", "mcg", "capsule", "capsules", "tablet", "tablets", "scoop", "scoops", "ml"];
+const SUPPLEMENT_UNITS = ["g", "mg", "mcg", "IU", "ml"];
+const DAILY_QUANTITY_UNITS = ["capsule", "tablet", "softgel", "gummy", "scoop", "serving"];
 const SUPPLEMENT_FREQUENCIES = ["Daily", "Training days", "Rest days", "As needed"];
 const SUPPLEMENT_TIMINGS = ["Morning", "With breakfast", "With lunch", "With dinner", "Before workout", "After workout", "Before bed"];
+
+function dailyQuantityText(quantity: number, unit: string | null) {
+  const singularUnit = (unit?.trim() || "capsule").replace(/s$/i, "");
+  const displayUnit = quantity === 1 ? singularUnit : `${singularUnit}s`;
+  return `${numberText(quantity)} ${displayUnit}/day`;
+}
 
 function SupplementsSection({ supplements, run }: { supplements: Supplement[]; run: Runner }) {
   const [editing, setEditing] = useState(false);
@@ -215,29 +222,32 @@ function SupplementsSection({ supplements, run }: { supplements: Supplement[]; r
         <div key={item.id} className="flex min-h-11 items-center gap-1 px-3 py-2">
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">{item.name}</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">{numberText(item.dosage)} {item.unit}{item.daily_quantity != null ? ` · ${numberText(item.daily_quantity)} ${item.unit}/day` : ""} · {item.frequency}{item.timing ? ` · ${item.timing}` : ""}{item.note ? <><br />{item.note}</> : null}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{numberText(item.dosage)} {item.unit} · {item.frequency}{item.timing ? ` · ${item.timing}` : ""}</p>
+            {item.daily_quantity != null ? <span className="mt-1 inline-flex rounded-md bg-lavender-soft px-2 py-0.5 text-xs font-semibold text-brand">{dailyQuantityText(item.daily_quantity, item.daily_quantity_unit)}</span> : null}
+            {item.note ? <p className="mt-1 text-xs text-muted-foreground">{item.note}</p> : null}
           </div>
           {editing ? <><OrderButtons index={index} total={supplements.length} onMove={move} label="supplement" /><Button variant="ghost" size="iconSm" aria-label={`Edit ${item.name}`} onClick={() => setEditor({ item })}><Pencil /></Button><Button variant="ghost" size="iconSm" className="text-destructive" aria-label={`Delete ${item.name}`} onClick={() => setDeleteTarget(item)}><Trash2 /></Button></> : null}
         </div>
       ))}</div></Card>
     )}
     <Button className="mt-3" variant="ghost" size="sm" onClick={() => setEditor({})}><Plus /> Add Supplement</Button>
-    <SupplementDialog editor={editor} onClose={() => setEditor(null)} onSave={async (values) => { if (editor?.item) await run(() => updateSupplement(editor.item!.id, values), "Supplement updated"); else await run(() => addSupplement(values, supplements.length), "Supplement added"); }} />
+    <SupplementDialog editor={editor} onClose={() => setEditor(null)} onSave={async (values) => { const item = editor?.item; if (item) await run(() => updateSupplement(item.id, values), "Supplement updated"); else await run(() => addSupplement(values, supplements.length), "Supplement added"); }} />
     <AlertDialog open={deleteTarget !== null} onOpenChange={(open) => !open && setDeleteTarget(null)}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Remove {deleteTarget?.name}?</AlertDialogTitle><AlertDialogDescription>This supplement will be removed from your list.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={async () => { if (deleteTarget) await run(() => deleteSupplement(deleteTarget.id), "Supplement removed"); setDeleteTarget(null); }}>Remove</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
   </>;
 }
 
 function SupplementDialog({ editor, onClose, onSave }: { editor: { item?: Supplement } | null; onClose: () => void; onSave: (v: SupplementValues) => Promise<void> }) {
   const item = editor?.item;
-  const [form, setForm] = useState({ name: "", dosage: "", unit: "g", dailyQuantity: "", frequency: "Daily", timing: "", note: "" });
+  const [form, setForm] = useState({ name: "", dosage: "", unit: "g", dailyQuantity: "", dailyQuantityUnit: "capsule", frequency: "Daily", timing: "", note: "" });
   const [saving, setSaving] = useState(false);
-  useEffect(() => { if (editor) setForm({ name: item?.name ?? "", dosage: item ? String(item.dosage) : "", unit: item?.unit ?? "g", dailyQuantity: item?.daily_quantity != null ? String(item.daily_quantity) : "", frequency: item?.frequency ?? "Daily", timing: item?.timing ?? "", note: item?.note ?? "" }); }, [editor, item]);
-  return <Dialog open={editor !== null} onOpenChange={(open) => { if (!open) onClose(); }}><DialogContent><form onSubmit={async (e) => { e.preventDefault(); setSaving(true); try { await onSave({ name: form.name, dosage: Number(form.dosage), unit: form.unit, daily_quantity: form.dailyQuantity === "" ? null : Number(form.dailyQuantity), frequency: form.frequency, timing: form.timing || null, note: form.note || null }); onClose(); } finally { setSaving(false); } }}><DialogHeader><DialogTitle>{item ? "Edit Supplement" : "Add Supplement"}</DialogTitle></DialogHeader><div className="mt-3.5 grid gap-3 sm:grid-cols-2">
+  useEffect(() => { if (editor) setForm({ name: item?.name ?? "", dosage: item ? String(item.dosage) : "", unit: item?.unit ?? "g", dailyQuantity: item?.daily_quantity != null ? String(item.daily_quantity) : "", dailyQuantityUnit: item?.daily_quantity_unit ?? "capsule", frequency: item?.frequency ?? "Daily", timing: item?.timing ?? "", note: item?.note ?? "" }); }, [editor, item]);
+  return <Dialog open={editor !== null} onOpenChange={(open) => { if (!open) onClose(); }}><DialogContent><form onSubmit={async (e) => { e.preventDefault(); setSaving(true); try { await onSave({ name: form.name, dosage: Number(form.dosage), unit: form.unit, daily_quantity: form.dailyQuantity === "" ? null : Number(form.dailyQuantity), daily_quantity_unit: form.dailyQuantity === "" ? null : form.dailyQuantityUnit, frequency: form.frequency, timing: form.timing || null, note: form.note || null }); onClose(); } finally { setSaving(false); } }}><DialogHeader><DialogTitle>{item ? "Edit Supplement" : "Add Supplement"}</DialogTitle></DialogHeader><div className="mt-3.5 grid gap-3 sm:grid-cols-2">
     <div className="sm:col-span-2"><FieldLabel htmlFor="supp-name">Name</FieldLabel><Input id="supp-name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
     <div><FieldLabel htmlFor="supp-dosage">Dosage</FieldLabel><Input id="supp-dosage" type="number" min="0" step="any" required value={form.dosage} onChange={(e) => setForm({ ...form, dosage: e.target.value })} /></div>
     <div><FieldLabel htmlFor="supp-unit">Unit</FieldLabel><Input id="supp-unit" list="supp-units-list" required value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })} /><datalist id="supp-units-list">{SUPPLEMENT_UNITS.map((unit) => <option key={unit} value={unit} />)}</datalist></div>
     <div><FieldLabel htmlFor="supp-frequency">Frequency</FieldLabel><Input id="supp-frequency" list="supp-frequencies-list" required value={form.frequency} onChange={(e) => setForm({ ...form, frequency: e.target.value })} /><datalist id="supp-frequencies-list">{SUPPLEMENT_FREQUENCIES.map((frequency) => <option key={frequency} value={frequency} />)}</datalist></div>
     <div><FieldLabel htmlFor="supp-daily" hint="optional">Per Day</FieldLabel><Input id="supp-daily" type="number" min="0" step="any" placeholder="2" value={form.dailyQuantity} onChange={(e) => setForm({ ...form, dailyQuantity: e.target.value })} /></div>
+    <div><FieldLabel htmlFor="supp-daily-unit">Per Day Type</FieldLabel><Input id="supp-daily-unit" list="supp-daily-units-list" required={form.dailyQuantity !== ""} value={form.dailyQuantityUnit} onChange={(e) => setForm({ ...form, dailyQuantityUnit: e.target.value })} /><datalist id="supp-daily-units-list">{DAILY_QUANTITY_UNITS.map((unit) => <option key={unit} value={unit} />)}</datalist></div>
     <div className="sm:col-span-2"><FieldLabel htmlFor="supp-timing" hint="optional">Timing</FieldLabel><Input id="supp-timing" list="supp-timings-list" value={form.timing} onChange={(e) => setForm({ ...form, timing: e.target.value })} /><datalist id="supp-timings-list">{SUPPLEMENT_TIMINGS.map((timing) => <option key={timing} value={timing} />)}</datalist></div>
     <div className="sm:col-span-2"><FieldLabel htmlFor="supp-note" hint="optional">Note</FieldLabel><Input id="supp-note" placeholder="Take with food, mix with water…" value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} /></div>
   </div><DialogFooter className="mt-3"><Button type="button" variant="outline" onClick={onClose}>Cancel</Button><Button type="submit" disabled={saving}>{saving ? "Saving…" : "Save Supplement"}</Button></DialogFooter></form></DialogContent></Dialog>;

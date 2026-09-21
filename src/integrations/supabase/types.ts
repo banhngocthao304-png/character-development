@@ -471,6 +471,7 @@ export type Database = {
         Row: {
           created_at: string
           daily_quantity: number | null
+          daily_quantity_unit: string | null
           dosage: number
           frequency: string
           id: string
@@ -485,6 +486,7 @@ export type Database = {
         Insert: {
           created_at?: string
           daily_quantity?: number | null
+          daily_quantity_unit?: string | null
           dosage: number
           frequency: string
           id?: string
@@ -499,6 +501,7 @@ export type Database = {
         Update: {
           created_at?: string
           daily_quantity?: number | null
+          daily_quantity_unit?: string | null
           dosage?: number
           frequency?: string
           id?: string
