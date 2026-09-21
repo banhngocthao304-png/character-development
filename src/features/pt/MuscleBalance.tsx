@@ -21,23 +21,9 @@ import { addDays, parseISODate, todayISO } from "@/lib/dates";
 import {
   fetchExerciseLibrary,
   fetchMuscleBalanceExercises,
-  type LibraryExercise,
-  type MuscleBalanceExercise,
 } from "./api";
 import { cn } from "@/lib/utils";
-
-const MUSCLES = [
-  "Glutes",
-  "Quads",
-  "Hamstrings",
-  "Back",
-  "Chest",
-  "Shoulders",
-  "Arms",
-  "Core",
-] as const;
-
-type Muscle = (typeof MUSCLES)[number];
+import { calculateMuscleCredits } from "./muscle-logic";
 type PeriodOption = "week" | "cycle" | "30days" | "all";
 
 const PERIODS: { value: PeriodOption; label: string }[] = [
@@ -50,74 +36,6 @@ const PERIODS: { value: PeriodOption; label: string }[] = [
 const chartConfig = {
   credits: { label: "Set credits", color: "var(--color-primary)" },
 } satisfies ChartConfig;
-
-function normalizedName(value: string) {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-}
-
-function includedMuscles(values: string[]): Muscle[] {
-  return values.filter((value): value is Muscle => MUSCLES.includes(value as Muscle));
-}
-
-function resolveLibraryMapping(name: string, library: LibraryExercise[]) {
-  const wanted = normalizedName(name);
-  if (!wanted) return null;
-
-  const exact = library.find(
-    (item) =>
-      normalizedName(item.exercise_name) === wanted ||
-      (item.aliases ?? []).some((alias) => normalizedName(alias) === wanted),
-  );
-  if (exact) return exact;
-
-  // Historical logs can include harmless qualifiers such as equipment or grip.
-  // Only accept a partial match when it points to one unambiguous library record.
-  const candidates = library.filter((item) =>
-    [item.exercise_name, ...(item.aliases ?? [])].some((candidate) => {
-      const key = normalizedName(candidate);
-      return key.length >= 6 && (wanted.includes(key) || key.includes(wanted));
-    }),
-  );
-  const uniqueIds = new Set(candidates.map((item) => item.id));
-  return uniqueIds.size === 1 ? candidates[0] : null;
-}
-
-export function calculateMuscleCredits(
-  exercises: MuscleBalanceExercise[],
-  library: LibraryExercise[],
-  startISO?: string,
-  endISO = todayISO(),
-) {
-  const totals = Object.fromEntries(MUSCLES.map((muscle) => [muscle, 0])) as Record<Muscle, number>;
-  for (const exercise of exercises) {
-    if (exercise.session_date > endISO || (startISO && exercise.session_date < startISO)) continue;
-    const sets = exercise.sets ?? 0;
-    if (!Number.isFinite(sets) || sets <= 0) continue;
-    const mapping = exercise.exercise_library_id
-      ? library.find((item) => item.id === exercise.exercise_library_id)
-      : resolveLibraryMapping(exercise.exercise_name, library);
-    const primary = includedMuscles(
-      exercise.primary_muscle_groups.length
-        ? exercise.primary_muscle_groups
-        : (mapping?.primary_muscle_groups ?? []),
-    );
-    const secondary = includedMuscles(
-      exercise.secondary_muscle_groups.length
-        ? exercise.secondary_muscle_groups
-        : (mapping?.secondary_muscle_groups ?? []),
-    ).filter(
-      (muscle) => !primary.includes(muscle),
-    );
-    if (primary.length) {
-      for (const muscle of primary) totals[muscle] += sets / primary.length;
-    }
-    if (secondary.length) {
-      for (const muscle of secondary) totals[muscle] += sets * 0.5;
-    }
-  }
-
-  return MUSCLES.map((muscle) => ({ muscle, credits: Math.round(totals[muscle] * 10) / 10 }));
-}
 
 function periodRange(option: PeriodOption, cycle: { startISO: string; endISO: string }) {
   const today = todayISO();

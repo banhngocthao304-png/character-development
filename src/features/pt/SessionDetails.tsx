@@ -8,10 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Chip, FieldLabel, Skeleton } from "@/components/ui-kit";
 import { formatDate, formatDateShort } from "@/lib/dates";
 import { ExercisePicker } from "./ExercisePicker";
+import { MuscleHeatmap } from "./MuscleHeatmap";
 import { SESSION_TYPES } from "@/lib/pt";
 import {
   addExercise,
   deleteExercise,
+  fetchExerciseLibrary,
   fetchExerciseHistory,
   fetchExercises,
   lastTimeFor,
@@ -61,6 +63,7 @@ export function SessionDetails({
     queryKey: ["pt-exercise-history"],
     queryFn: fetchExerciseHistory,
   });
+  const libraryQuery = useQuery({ queryKey: ["exercise-library"], queryFn: fetchExerciseLibrary });
 
   const knownNames = useMemo(
     () => uniqueExerciseNames(historyQuery.data ?? []),
@@ -199,6 +202,12 @@ export function SessionDetails({
         </Button>
       )}
 
+      <MuscleHeatmap
+        exercises={exercises}
+        library={libraryQuery.data ?? []}
+        loading={exercisesQuery.isLoading || libraryQuery.isLoading}
+      />
+
       <div className="mt-3">
         <FieldLabel htmlFor="session-note" hint="(optional)">
           Session note
@@ -266,6 +275,7 @@ function ExerciseRow({
     onMutate: onSaving,
     onSuccess: () => {
       onSaved();
+      queryClient.invalidateQueries({ queryKey: ["pt-exercises", exercise.pt_session_id] });
       queryClient.invalidateQueries({ queryKey: ["pt-exercise-history"] });
       queryClient.invalidateQueries({ queryKey: ["pt-muscle-balance"] });
     },
