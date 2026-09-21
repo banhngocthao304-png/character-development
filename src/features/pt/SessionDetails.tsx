@@ -8,7 +8,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Chip, FieldLabel, Skeleton } from "@/components/ui-kit";
 import { formatDate, formatDateShort } from "@/lib/dates";
 import { ExercisePicker } from "./ExercisePicker";
-import { MuscleHeatmap } from "./MuscleHeatmap";
 import { SESSION_TYPES } from "@/lib/pt";
 import {
   addExercise,
@@ -201,12 +200,6 @@ export function SessionDetails({
           Add exercise
         </Button>
       )}
-
-      <MuscleHeatmap
-        exercises={exercises}
-        library={libraryQuery.data ?? []}
-        loading={exercisesQuery.isLoading || libraryQuery.isLoading}
-      />
 
       <div className="mt-3">
         <FieldLabel htmlFor="session-note" hint="(optional)">
