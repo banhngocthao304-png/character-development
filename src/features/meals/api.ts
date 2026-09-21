@@ -147,7 +147,7 @@ export async function deleteFoodOption(id: string) {
   if (error) throw error;
 }
 
-export type SupplementValues = Pick<Supplement, "name" | "dosage" | "unit" | "frequency" | "timing" | "note">;
+export type SupplementValues = Pick<Supplement, "name" | "dosage" | "unit" | "frequency" | "timing" | "note" | "daily_quantity">;
 
 export async function addSupplement(values: SupplementValues, sortOrder: number) {
   const { error } = await supabase.from("supplements").insert({
