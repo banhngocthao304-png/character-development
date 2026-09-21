@@ -97,8 +97,8 @@ export function SessionDetails({
   const [picking, setPicking] = useState(false);
 
   const addMutation = useMutation({
-    mutationFn: (name: string) =>
-      addExercise(session.id, (exercisesQuery.data?.length ?? 0) + 1, name),
+    mutationFn: ({ name, libraryId }: { name: string; libraryId: string | null }) =>
+      addExercise(session.id, (exercisesQuery.data?.length ?? 0) + 1, name, libraryId),
     onSuccess: () => {
       setPicking(false);
       queryClient.invalidateQueries({ queryKey: ["pt-exercises", session.id] });
@@ -189,7 +189,7 @@ export function SessionDetails({
         <ExercisePicker
           history={historyQuery.data ?? []}
           busy={addMutation.isPending}
-          onPick={(name) => addMutation.mutate(name)}
+          onPick={(name, libraryId) => addMutation.mutate({ name, libraryId })}
           onCancel={() => setPicking(false)}
         />
       ) : (

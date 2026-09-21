@@ -11,6 +11,7 @@ export type PtSession = {
 export type PtExercise = {
   id: string;
   pt_session_id: string;
+  exercise_library_id: string | null;
   exercise_name: string;
   weight: number | null;
   weight_unit: string;
@@ -94,13 +95,19 @@ export async function fetchExercises(sessionId: string) {
   return (data ?? []) as PtExercise[];
 }
 
-export async function addExercise(sessionId: string, sortOrder: number, name = "") {
+export async function addExercise(
+  sessionId: string,
+  sortOrder: number,
+  name = "",
+  exerciseLibraryId?: string | null,
+) {
   const userId = await currentUserId();
   const { data, error } = await supabase
     .from("pt_session_exercises")
     .insert({
       user_id: userId,
       pt_session_id: sessionId,
+      exercise_library_id: exerciseLibraryId ?? null,
       exercise_name: name,
       weight_unit: "kg",
       sort_order: sortOrder,
@@ -134,6 +141,9 @@ export type MuscleBalanceExercise = {
   exercise_name: string;
   sets: number | null;
   session_date: string;
+  exercise_library_id: string | null;
+  primary_muscle_groups: string[];
+  secondary_muscle_groups: string[];
 };
 
 /** All previously logged exercises (own data only), newest session first. */
@@ -163,15 +173,24 @@ export async function fetchExerciseHistory(): Promise<ExerciseHistoryEntry[]> {
 export async function fetchMuscleBalanceExercises(): Promise<MuscleBalanceExercise[]> {
   const { data, error } = await supabase
     .from("pt_session_exercises")
-    .select("exercise_name, sets, pt_sessions(session_date)");
+    .select(
+      "exercise_name, sets, exercise_library_id, pt_sessions(session_date), exercise_library(primary_muscle_groups, secondary_muscle_groups)",
+    );
   if (error) throw error;
   return (data ?? [])
     .map((row) => {
       const rel = row.pt_sessions as unknown as { session_date: string } | null;
+      const library = row.exercise_library as unknown as {
+        primary_muscle_groups: string[];
+        secondary_muscle_groups: string[];
+      } | null;
       return {
         exercise_name: row.exercise_name,
         sets: row.sets,
         session_date: rel?.session_date ?? "",
+        exercise_library_id: row.exercise_library_id,
+        primary_muscle_groups: library?.primary_muscle_groups ?? [],
+        secondary_muscle_groups: library?.secondary_muscle_groups ?? [],
       };
     })
     .filter((row) => row.exercise_name.trim().length > 0 && row.session_date);

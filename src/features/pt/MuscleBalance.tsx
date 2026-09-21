@@ -59,6 +59,29 @@ function includedMuscles(values: string[]): Muscle[] {
   return values.filter((value): value is Muscle => MUSCLES.includes(value as Muscle));
 }
 
+function resolveLibraryMapping(name: string, library: LibraryExercise[]) {
+  const wanted = normalizedName(name);
+  if (!wanted) return null;
+
+  const exact = library.find(
+    (item) =>
+      normalizedName(item.exercise_name) === wanted ||
+      (item.aliases ?? []).some((alias) => normalizedName(alias) === wanted),
+  );
+  if (exact) return exact;
+
+  // Historical logs can include harmless qualifiers such as equipment or grip.
+  // Only accept a partial match when it points to one unambiguous library record.
+  const candidates = library.filter((item) =>
+    [item.exercise_name, ...(item.aliases ?? [])].some((candidate) => {
+      const key = normalizedName(candidate);
+      return key.length >= 6 && (wanted.includes(key) || key.includes(wanted));
+    }),
+  );
+  const uniqueIds = new Set(candidates.map((item) => item.id));
+  return uniqueIds.size === 1 ? candidates[0] : null;
+}
+
 export function calculateMuscleCredits(
   exercises: MuscleBalanceExercise[],
   library: LibraryExercise[],
@@ -66,23 +89,23 @@ export function calculateMuscleCredits(
   endISO = todayISO(),
 ) {
   const totals = Object.fromEntries(MUSCLES.map((muscle) => [muscle, 0])) as Record<Muscle, number>;
-  const mappings = new Map<string, LibraryExercise>();
-  for (const item of library) {
-    mappings.set(normalizedName(item.exercise_name), item);
-    for (const alias of item.aliases ?? []) {
-      const key = normalizedName(alias);
-      if (key && !mappings.has(key)) mappings.set(key, item);
-    }
-  }
-
   for (const exercise of exercises) {
     if (exercise.session_date > endISO || (startISO && exercise.session_date < startISO)) continue;
     const sets = exercise.sets ?? 0;
     if (!Number.isFinite(sets) || sets <= 0) continue;
-    const mapping = mappings.get(normalizedName(exercise.exercise_name));
-    if (!mapping) continue;
-    const primary = includedMuscles(mapping.primary_muscle_groups ?? []);
-    const secondary = includedMuscles(mapping.secondary_muscle_groups ?? []).filter(
+    const mapping = exercise.exercise_library_id
+      ? library.find((item) => item.id === exercise.exercise_library_id)
+      : resolveLibraryMapping(exercise.exercise_name, library);
+    const primary = includedMuscles(
+      exercise.primary_muscle_groups.length
+        ? exercise.primary_muscle_groups
+        : (mapping?.primary_muscle_groups ?? []),
+    );
+    const secondary = includedMuscles(
+      exercise.secondary_muscle_groups.length
+        ? exercise.secondary_muscle_groups
+        : (mapping?.secondary_muscle_groups ?? []),
+    ).filter(
       (muscle) => !primary.includes(muscle),
     );
     if (primary.length) {
