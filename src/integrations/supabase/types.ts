@@ -216,6 +216,7 @@ export type Database = {
       }
       meal_plan_items: {
         Row: {
+          calories: number | null
           created_at: string
           food_name: string
           id: string
@@ -228,6 +229,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          calories?: number | null
           created_at?: string
           food_name: string
           id?: string
@@ -240,6 +242,7 @@ export type Database = {
           user_id?: string
         }
         Update: {
+          calories?: number | null
           created_at?: string
           food_name?: string
           id?: string
