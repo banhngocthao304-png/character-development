@@ -79,13 +79,13 @@ export async function deleteMeal(id: string) {
   if (error) throw error;
 }
 
-export type ItemValues = Pick<MealPlanItem, "food_name" | "quantity" | "unit" | "preparation">;
+export type ItemValues = Pick<MealPlanItem, "food_name" | "quantity" | "unit" | "preparation" | "calories">;
 
 export async function addMealItem(mealId: string, values: ItemValues, sortOrder: number) {
   const { error } = await supabase.from("meal_plan_items").insert({
     user_id: OWNER_ID, meal_id: mealId, sort_order: sortOrder,
     food_name: values.food_name.trim(), quantity: values.quantity, unit: values.unit.trim(),
-    preparation: values.preparation?.trim() || null,
+    preparation: values.preparation?.trim() || null, calories: values.calories ?? null,
   });
   if (error) throw error;
 }
@@ -93,7 +93,7 @@ export async function addMealItem(mealId: string, values: ItemValues, sortOrder:
 export async function updateMealItem(id: string, values: ItemValues) {
   const { error } = await supabase.from("meal_plan_items").update({
     food_name: values.food_name.trim(), quantity: values.quantity, unit: values.unit.trim(),
-    preparation: values.preparation?.trim() || null,
+    preparation: values.preparation?.trim() || null, calories: values.calories ?? null,
   }).eq("id", id);
   if (error) throw error;
 }
