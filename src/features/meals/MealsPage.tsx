@@ -120,6 +120,7 @@ function MealPlanSection({ meals, foodNames, run }: { meals: MealWithItems[]; fo
 
 function mealCalories(meal: MealWithItems) { const known = meal.items.filter((i) => i.calories != null); return known.length ? known.reduce((sum, i) => sum + Number(i.calories), 0) : null; }
 function roundEstimate(value: number) { return value >= 50 ? Math.round(value / 50) * 50 : Math.round(value); }
+function calorieRange(meal: MealWithItems) { const values = meal.items.flatMap((i) => i.calories != null ? [Number(i.calories)] : []); if (!values.length) return null; const min = Math.min(...values); const max = Math.max(...values); return min === max ? `~${numberText(min)} kcal` : `~${numberText(min)}–${numberText(max)} kcal`; }
 function amountText(item: Pick<MealPlanItem, "quantity" | "unit" | "preparation">) { return `${numberText(item.quantity)} ${item.unit}${item.preparation ? ` ${item.preparation}` : ""}`; }
 
 function formatFoodItem(item: Pick<MealPlanItem, "quantity" | "unit" | "preparation" | "food_name">) {
