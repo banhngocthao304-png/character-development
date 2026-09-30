@@ -3,7 +3,15 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardTitle, Skeleton } from "@/components/ui-kit";
 import { fetchExerciseLibrary, fetchPersonalRecordRows } from "./api";
 
-const INITIAL = 7;
+const PER_GROUP = 4;
+const GROUPS = ["Glutes", "Legs", "Back", "Chest", "Shoulders", "Arms", "Core", "Other"] as const;
+type Group = (typeof GROUPS)[number];
+
+function groupFor(muscles: string[] | undefined): Group {
+  const first = (muscles ?? [])[0];
+  if (first === "Quads" || first === "Hamstrings" || first === "Calves") return "Legs";
+  return (GROUPS as readonly string[]).includes(first ?? "") ? (first as Group) : "Other";
+}
 
 type Record = {
   key: string;
@@ -12,6 +20,7 @@ type Record = {
   unit: string;
   reps: number | null;
   lastDate: string;
+  group: Group;
 };
 
 export function PersonalRecords({ className = "" }: { className?: string }) {
@@ -49,6 +58,7 @@ export function PersonalRecords({ className = "" }: { className?: string }) {
           unit,
           reps: r.reps,
           lastDate: r.session_date,
+          group: groupFor(lib?.primary_muscle_groups?.length ? lib.primary_muscle_groups : lib ? [lib.primary_muscle_group] : []),
         });
         continue;
       }
@@ -63,13 +73,15 @@ export function PersonalRecords({ className = "" }: { className?: string }) {
     );
   }, [rowsQuery.data, libraryQuery.data]);
 
-  const visible = showAll ? records : records.slice(0, INITIAL);
+  const grouped = GROUPS.map((g) => ({ group: g, items: records.filter((r) => r.group === g) })).filter(
+    (g) => g.items.length > 0,
+  );
+  const hasMore = grouped.some((g) => g.items.length > PER_GROUP);
 
   return (
     <Card className={className}>
       <CardTitle>
-        Personal Records{" "}
-        <span className="text-[11px] font-normal text-muted-foreground">(the receipts)</span>
+        My PRs <span className="text-[11px] font-normal text-muted-foreground">(the receipts)</span>
       </CardTitle>
       {rowsQuery.isLoading ? (
         <Skeleton className="h-20" />
@@ -77,22 +89,31 @@ export function PersonalRecords({ className = "" }: { className?: string }) {
         <p className="text-xs text-muted-foreground">Log a weight on any exercise to see it here.</p>
       ) : (
         <>
-          <ul className="divide-y divide-border">
-            {visible.map((r) => (
-              <li key={r.key} className="flex items-center justify-between gap-3 py-1.5 text-sm">
-                <span className="min-w-0 truncate">{r.name}</span>
-                <span className="shrink-0 font-semibold tabular-nums">
-                  {r.weight.toLocaleString(undefined, { maximumFractionDigits: 2 })} {r.unit}
-                  {r.reps ? <span className="font-normal text-muted-foreground"> × {r.reps}</span> : null}
-                </span>
-              </li>
+          <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
+            {grouped.map(({ group, items }) => (
+              <section key={group} className="min-w-0">
+                <h3 className="border-b border-border pb-1 text-[10px] font-semibold uppercase tracking-wider text-brand">
+                  {group}
+                </h3>
+                <ul>
+                  {(showAll ? items : items.slice(0, PER_GROUP)).map((r) => (
+                    <li key={r.key} className="flex items-baseline justify-between gap-3 py-1 text-[13px]">
+                      <span className="min-w-0 truncate text-muted-foreground">{r.name}</span>
+                      <span className="shrink-0 font-semibold tabular-nums text-foreground">
+                        {r.weight.toLocaleString(undefined, { maximumFractionDigits: 2 })} {r.unit}
+                        {r.reps ? <span className="font-normal text-muted-foreground"> × {r.reps}</span> : null}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             ))}
-          </ul>
-          {records.length > INITIAL ? (
+          </div>
+          {hasMore ? (
             <button
               type="button"
               onClick={() => setShowAll((v) => !v)}
-              className="mt-1.5 text-xs font-medium text-primary hover:underline"
+              className="mt-2 text-xs font-medium text-primary hover:underline"
             >
               {showAll ? "Show less" : `View all (${records.length})`}
             </button>
