@@ -14,6 +14,7 @@ Out of scope: Meal Log / actual food tracking, consumed calories/macros, recipes
 - [x] PT Tracker page: period summary, infinite calendar, session details panel,
       exercise autocomplete, last-time weight, autosave, remove confirmation
 - [x] Muscle Balance: canonical exercise links, historical alias backfill, and verified set credits
+- [x] Personal Records (derived from history)
 - [ ] Session Muscle Heatmap: removed per user request
 - [x] Body Measurements: entries, latest per-metric, change vs previous, chart, history
 - [x] Body Measurements: make one monthly check-in the primary workflow

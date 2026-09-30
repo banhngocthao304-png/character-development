@@ -17,6 +17,7 @@ import {
 import { PtCalendar } from "@/features/pt/PtCalendar";
 import { SessionDetails } from "@/features/pt/SessionDetails";
 import { MuscleBalance } from "@/features/pt/MuscleBalance";
+import { PersonalRecords } from "@/features/pt/PersonalRecords";
 import {
   createSession,
   deleteSession,
@@ -202,6 +203,8 @@ function PtPage() {
         </div>
 
         <MuscleBalance cycle={period} className="lg:col-span-2 lg:row-start-2" />
+
+        <PersonalRecords className="lg:col-span-2 lg:row-start-3" />
 
         <Card className="lg:col-start-2 lg:row-start-1 lg:self-start">
           <CardTitle>Session details</CardTitle>

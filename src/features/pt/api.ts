@@ -268,3 +268,34 @@ export function uniqueExerciseNames(history: ExerciseHistoryEntry[]): string[] {
   }
   return [...seen.values()].sort((a, b) => a.localeCompare(b));
 }
+
+export type PersonalRecordRow = {
+  exercise_name: string;
+  exercise_library_id: string | null;
+  weight: number | null;
+  weight_unit: string;
+  reps: number | null;
+  session_date: string;
+};
+
+/** Every logged exercise with a weight; PRs are derived from this history. */
+export async function fetchPersonalRecordRows(): Promise<PersonalRecordRow[]> {
+  const { data, error } = await supabase
+    .from("pt_session_exercises")
+    .select("exercise_name, exercise_library_id, weight, weight_unit, reps, pt_sessions(session_date)")
+    .not("weight", "is", null);
+  if (error) throw error;
+  return (data ?? [])
+    .map((row) => {
+      const rel = row.pt_sessions as unknown as { session_date: string } | null;
+      return {
+        exercise_name: row.exercise_name,
+        exercise_library_id: row.exercise_library_id,
+        weight: row.weight,
+        weight_unit: row.weight_unit,
+        reps: row.reps,
+        session_date: rel?.session_date ?? "",
+      };
+    })
+    .filter((r) => r.exercise_name.trim() && r.session_date && r.weight != null && r.weight > 0);
+}
