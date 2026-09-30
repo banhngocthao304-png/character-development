@@ -217,7 +217,6 @@ export type Database = {
       meal_plan_items: {
         Row: {
           calories: number | null
-          calories: number | null
           created_at: string
           food_name: string
           id: string
@@ -231,7 +230,6 @@ export type Database = {
         }
         Insert: {
           calories?: number | null
-          calories?: number | null
           created_at?: string
           food_name: string
           id?: string
@@ -244,7 +242,6 @@ export type Database = {
           user_id?: string
         }
         Update: {
-          calories?: number | null
           calories?: number | null
           created_at?: string
           food_name?: string
@@ -297,7 +294,6 @@ export type Database = {
       nutrition_targets: {
         Row: {
           calories_max: number
-          calories_min: number
           carbs_max_g: number
           carbs_min_g: number
           created_at: string
@@ -313,7 +309,6 @@ export type Database = {
         }
         Insert: {
           calories_max?: number
-          calories_min?: number
           carbs_max_g?: number
           carbs_min_g?: number
           created_at?: string
@@ -329,7 +324,6 @@ export type Database = {
         }
         Update: {
           calories_max?: number
-          calories_min?: number
           carbs_max_g?: number
           carbs_min_g?: number
           created_at?: string
