@@ -14,7 +14,7 @@ type Record = {
   lastDate: string;
 };
 
-export function PersonalRecords({ className }: { className?: string }) {
+export function PersonalRecords({ className = "" }: { className?: string }) {
   const [showAll, setShowAll] = useState(false);
   // Key shares the muscle-balance prefix so every existing exercise/session mutation refreshes it.
   const rowsQuery = useQuery({ queryKey: ["pt-muscle-balance", "prs"], queryFn: fetchPersonalRecordRows });
