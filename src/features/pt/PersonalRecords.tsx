@@ -81,7 +81,7 @@ export function PersonalRecords({ className = "" }: { className?: string }) {
   return (
     <Card className={className}>
       <CardTitle>
-        My PRs <span className="text-[11px] font-normal text-muted-foreground">(the receipts)</span>
+        My PRs
       </CardTitle>
       {rowsQuery.isLoading ? (
         <Skeleton className="h-20" />
