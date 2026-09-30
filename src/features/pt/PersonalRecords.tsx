@@ -1,9 +1,8 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardTitle, Skeleton } from "@/components/ui-kit";
 import { fetchExerciseLibrary, fetchPersonalRecordRows } from "./api";
 
-const PER_GROUP = 4;
 const GROUPS = ["Glutes", "Legs", "Back", "Chest", "Shoulders", "Arms", "Core", "Other"] as const;
 type Group = (typeof GROUPS)[number];
 
@@ -24,7 +23,6 @@ type Record = {
 };
 
 export function PersonalRecords({ className = "" }: { className?: string }) {
-  const [showAll, setShowAll] = useState(false);
   // Key shares the muscle-balance prefix so every existing exercise/session mutation refreshes it.
   const rowsQuery = useQuery({ queryKey: ["pt-muscle-balance", "prs"], queryFn: fetchPersonalRecordRows });
   const libraryQuery = useQuery({ queryKey: ["exercise-library"], queryFn: fetchExerciseLibrary });
@@ -76,7 +74,6 @@ export function PersonalRecords({ className = "" }: { className?: string }) {
   const grouped = GROUPS.map((g) => ({ group: g, items: records.filter((r) => r.group === g) })).filter(
     (g) => g.items.length > 0,
   );
-  const hasMore = grouped.some((g) => g.items.length > PER_GROUP);
 
   return (
     <Card className={className}>
@@ -96,7 +93,7 @@ export function PersonalRecords({ className = "" }: { className?: string }) {
                   {group}
                 </h3>
                 <ul>
-                  {(showAll ? items : items.slice(0, PER_GROUP)).map((r) => (
+                  {items.map((r) => (
                     <li key={r.key} className="flex items-baseline justify-between gap-3 py-1 text-[13px]">
                       <span className="min-w-0 truncate text-muted-foreground">{r.name}</span>
                       <span className="shrink-0 font-semibold tabular-nums text-foreground">
@@ -109,15 +106,6 @@ export function PersonalRecords({ className = "" }: { className?: string }) {
               </section>
             ))}
           </div>
-          {hasMore ? (
-            <button
-              type="button"
-              onClick={() => setShowAll((v) => !v)}
-              className="mt-2 text-xs font-medium text-primary hover:underline"
-            >
-              {showAll ? "Show less" : `View all (${records.length})`}
-            </button>
-          ) : null}
         </>
       )}
     </Card>
