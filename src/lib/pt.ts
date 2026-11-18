@@ -1,7 +1,7 @@
 import { addMonths, parseISODate, toISODate, todayISO } from "./dates";
 
-export const DEFAULT_PERIOD_START_DAY = 15;
-export const DEFAULT_SESSIONS_PER_PERIOD = 16;
+export const DEFAULT_PERIOD_START_DAY = 18;
+export const DEFAULT_SESSIONS_PER_PERIOD = 12;
 
 export type PtPeriod = { startISO: string; endISO: string };
 

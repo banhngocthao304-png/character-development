@@ -30,8 +30,8 @@ function SettingsPage() {
   const [sessions, setSessions] = useState<string | null>(null);
   const [startDay, setStartDay] = useState<string | null>(null);
 
-  const sessionsValue = sessions ?? String(settingsQuery.data?.sessions_per_period ?? 16);
-  const startDayValue = startDay ?? String(settingsQuery.data?.period_start_day ?? 15);
+  const sessionsValue = sessions ?? String(settingsQuery.data?.sessions_per_period ?? 12);
+  const startDayValue = startDay ?? String(settingsQuery.data?.period_start_day ?? 18);
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -39,8 +39,8 @@ function SettingsPage() {
       const { error } = await supabase
         .from("pt_settings")
         .update({
-          sessions_per_period: Math.max(1, Math.round(Number(sessionsValue) || 16)),
-          period_start_day: Math.min(28, Math.max(1, Math.round(Number(startDayValue) || 15))),
+          sessions_per_period: Math.max(1, Math.round(Number(sessionsValue) || 12)),
+          period_start_day: Math.min(28, Math.max(1, Math.round(Number(startDayValue) || 18))),
         })
         .eq("user_id", userId);
       if (error) throw error;
